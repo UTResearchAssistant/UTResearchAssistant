@@ -1,0 +1,222 @@
+{% extends "core/base.html" %}
+
+{% block title %}User Preferences - Research Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cog me-2"></i>User Preferences
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Search Preferences -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-search me-2"></i>Search Preferences
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max_search_results" class="form-label">Maximum Search Results</label>
+                                <select class="form-select" id="max_search_results" name="max_search_results">
+                                    <option value="10" {% if preferences.max_search_results == 10 %}selected{% endif %}>10</option>
+                                    <option value="20" {% if preferences.max_search_results == 20 %}selected{% endif %}>20</option>
+                                    <option value="50" {% if preferences.max_search_results == 50 %}selected{% endif %}>50</option>
+                                    <option value="100" {% if preferences.max_search_results == 100 %}selected{% endif %}>100</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="items_per_page" class="form-label">Items Per Page</label>
+                                <select class="form-select" id="items_per_page" name="items_per_page">
+                                    <option value="10" {% if preferences.items_per_page == 10 %}selected{% endif %}>10</option>
+                                    <option value="25" {% if preferences.items_per_page == 25 %}selected{% endif %}>25</option>
+                                    <option value="50" {% if preferences.items_per_page == 50 %}selected{% endif %}>50</option>
+                                    <option value="100" {% if preferences.items_per_page == 100 %}selected{% endif %}>100</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Language Preferences -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-language me-2"></i>Language Preferences
+                                </h6>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Preferred Languages</label>
+                                <div class="row">
+                                    {% for value, label in available_languages %}
+                                    <div class="col-md-3 col-sm-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="preferred_languages" value="{{ value }}" 
+                                                   id="lang_{{ value }}"
+                                                   {% if value in preferences.preferred_languages_list %}checked{% endif %}>
+                                            <label class="form-check-label" for="lang_{{ value }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notification Preferences -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-bell me-2"></i>Notification Preferences
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="email_notifications" name="email_notifications"
+                                           {% if preferences.email_notifications %}checked{% endif %}>
+                                    <label class="form-check-label" for="email_notifications">
+                                        Email Notifications
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="web_notifications" name="web_notifications"
+                                           {% if preferences.web_notifications %}checked{% endif %}>
+                                    <label class="form-check-label" for="web_notifications">
+                                        Web Notifications
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="notification_frequency" class="form-label">Notification Frequency</label>
+                                <select class="form-select" id="notification_frequency" name="notification_frequency">
+                                    <option value="immediate" {% if preferences.notification_frequency == 'immediate' %}selected{% endif %}>Immediate</option>
+                                    <option value="daily" {% if preferences.notification_frequency == 'daily' %}selected{% endif %}>Daily Digest</option>
+                                    <option value="weekly" {% if preferences.notification_frequency == 'weekly' %}selected{% endif %}>Weekly Digest</option>
+                                    <option value="monthly" {% if preferences.notification_frequency == 'monthly' %}selected{% endif %}>Monthly Digest</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Audio Preferences -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-microphone me-2"></i>Audio & Podcast Preferences
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="preferred_podcast_style" class="form-label">Podcast Style</label>
+                                <select class="form-select" id="preferred_podcast_style" name="preferred_podcast_style">
+                                    <option value="summary" {% if preferences.preferred_podcast_style == 'summary' %}selected{% endif %}>Summary</option>
+                                    <option value="detailed" {% if preferences.preferred_podcast_style == 'detailed' %}selected{% endif %}>Detailed</option>
+                                    <option value="conversation" {% if preferences.preferred_podcast_style == 'conversation' %}selected{% endif %}>Conversation</option>
+                                    <option value="interview" {% if preferences.preferred_podcast_style == 'interview' %}selected{% endif %}>Interview</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="preferred_voice" class="form-label">Preferred Voice</label>
+                                <select class="form-select" id="preferred_voice" name="preferred_voice">
+                                    <option value="alloy" {% if preferences.preferred_voice == 'alloy' %}selected{% endif %}>Alloy</option>
+                                    <option value="echo" {% if preferences.preferred_voice == 'echo' %}selected{% endif %}>Echo</option>
+                                    <option value="fable" {% if preferences.preferred_voice == 'fable' %}selected{% endif %}>Fable</option>
+                                    <option value="onyx" {% if preferences.preferred_voice == 'onyx' %}selected{% endif %}>Onyx</option>
+                                    <option value="nova" {% if preferences.preferred_voice == 'nova' %}selected{% endif %}>Nova</option>
+                                    <option value="shimmer" {% if preferences.preferred_voice == 'shimmer' %}selected{% endif %}>Shimmer</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Interface Preferences -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="fas fa-desktop me-2"></i>Interface Preferences
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="theme" class="form-label">Theme</label>
+                                <select class="form-select" id="theme" name="theme">
+                                    <option value="light" {% if preferences.theme == 'light' %}selected{% endif %}>Light</option>
+                                    <option value="dark" {% if preferences.theme == 'dark' %}selected{% endif %}>Dark</option>
+                                    <option value="auto" {% if preferences.theme == 'auto' %}selected{% endif %}>Auto (System)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Save Button -->
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Preferences
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-undo me-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Account Information -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>Account Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Username:</strong> {{ user.username }}</p>
+                            <p><strong>Email:</strong> {{ user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Full Name:</strong> {{ user.get_full_name|default:"Not provided" }}</p>
+                            <p><strong>Member Since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preference Stats -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Usage Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h5 class="text-primary">{{ user.searchhistory_set.count }}</h5>
+                            <p class="text-muted mb-0">Searches</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h5 class="text-success">{{ user.writingassistance_set.count }}</h5>
+                            <p class="text-muted mb-0">Writing Sessions</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h5 class="text-info">{{ user.paperbookmark_set.count }}</h5>
+                            <p class="text-muted mb-0">Bookmarks</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h5 class="text-warning">{{ user.sent_requests.count }}</h5>
+                            <p class="text-muted mb-0">Collaborations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

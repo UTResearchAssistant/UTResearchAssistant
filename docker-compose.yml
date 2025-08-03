@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+      - ./datasets:/data
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - vector_db
+
+  frontend:
+    build: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  vector_db:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  django-ui:
+    build: ./django_ui
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./django_ui:/code
+      - ./datasets:/data
+    environment:
+      - API_BASE_URL=http://backend:8000
+      - DJANGO_SECRET_KEY=devsecret
+    ports:
+      - "8001:8001"
+    depends_on:
+      - backend
+
+volumes:
+  qdrant_data:

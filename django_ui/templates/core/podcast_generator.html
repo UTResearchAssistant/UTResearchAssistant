@@ -1,0 +1,305 @@
+{% extends "core/base.html" %} {% block title %}Podcast Generator - Research
+Assistant{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Podcast Generation Form -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-microphone me-2"></i>Generate Research Podcast
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="generate" />
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Podcast Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                placeholder="e.g., Understanding Deep Learning"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="paper_content" class="form-label"
+                >Research Paper Content</label
+              >
+              <textarea
+                class="form-control"
+                id="paper_content"
+                name="paper_content"
+                rows="6"
+                placeholder="Paste your research paper abstract, content, or key points here..."
+                required
+              ></textarea>
+              <div class="form-text">
+                Provide the research content you want to convert into a podcast.
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="style" class="form-label">Podcast Style</label>
+                <select class="form-select" id="style" name="style" required>
+                  {% for value, label in podcast_styles %}
+                  <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="voice" class="form-label">Voice</label>
+                <select class="form-select" id="voice" name="voice" required>
+                  {% for value, label in voice_options %}
+                  <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="duration" class="form-label"
+                >Duration (seconds)</label
+              >
+              <select class="form-select" id="duration" name="duration">
+                <option value="180">3 minutes (180s)</option>
+                <option value="300" selected>5 minutes (300s)</option>
+                <option value="600">10 minutes (600s)</option>
+                <option value="900">15 minutes (900s)</option>
+                <option value="1800">30 minutes (1800s)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100">
+              <i class="fas fa-play me-2"></i>Generate Podcast
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Generation Stats -->
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">
+            <i class="fas fa-chart-pie me-2"></i>Generation Statistics
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <h5 class="text-warning">{{ podcasts.paginator.count }}</h5>
+              <p class="text-muted small mb-0">Total Podcasts</p>
+            </div>
+            <div class="col-6">
+              <h5 class="text-success">
+                {% widthratio podcasts.paginator.count 1 60 %}
+              </h5>
+              <p class="text-muted small mb-0">Total Minutes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generated Podcasts -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">
+            <i class="fas fa-headphones me-2"></i>Generated Podcasts
+          </h5>
+          <span class="badge bg-primary"
+            >{{ podcasts.paginator.count }} total</span
+          >
+        </div>
+        <div class="card-body">
+          {% if podcasts %} {% for podcast in podcasts %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-1">{{ podcast.title }}</h6>
+                <small class="text-muted"
+                  >{{ podcast.created_at|date:"M d, Y H:i" }}</small
+                >
+              </div>
+              <span class="badge bg-warning text-dark"
+                >{{ podcast.get_style_display }}</span
+              >
+            </div>
+
+            <p class="text-secondary small mb-2">{{ podcast.description }}</p>
+
+            <div class="row mb-3">
+              <div class="col-md-3">
+                <small class="text-muted">
+                  <i class="fas fa-clock me-1"></i>
+                  {% widthratio podcast.duration_seconds 1 60 %} min
+                </small>
+              </div>
+              <div class="col-md-3">
+                <small class="text-muted">
+                  <i class="fas fa-user-tie me-1"></i>{{
+                  podcast.voice_model|title }}
+                </small>
+              </div>
+              <div class="col-md-3">
+                <small class="text-muted">
+                  <i class="fas fa-file-audio me-1"></i>
+                  {% if podcast.file_size %}{{ podcast.file_size|filesizeformat
+                  }}{% else %}N/A{% endif %}
+                </small>
+              </div>
+              <div class="col-md-3">
+                <small class="text-muted">
+                  <i class="fas fa-stopwatch me-1"></i>{{
+                  podcast.generation_time|floatformat:1 }}s
+                </small>
+              </div>
+            </div>
+
+            <!-- Audio Player -->
+            {% if podcast.audio_file %}
+            <div class="mb-3">
+              <audio controls class="w-100">
+                <source src="{{ podcast.audio_file.url }}" type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+            {% endif %}
+
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-sm btn-outline-primary"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#transcript-{{ podcast.id }}"
+                aria-expanded="false"
+              >
+                <i class="fas fa-file-alt me-1"></i>View Transcript
+              </button>
+              {% if podcast.audio_file %}
+              <a
+                href="{{ podcast.audio_file.url }}"
+                download
+                class="btn btn-sm btn-outline-success"
+              >
+                <i class="fas fa-download me-1"></i>Download
+              </a>
+              {% endif %}
+            </div>
+
+            <!-- Transcript Collapse -->
+            {% if podcast.transcript %}
+            <div class="collapse mt-3" id="transcript-{{ podcast.id }}">
+              <div class="bg-light p-3 rounded">
+                <h6>Transcript:</h6>
+                <div
+                  class="small text-secondary"
+                  style="max-height: 200px; overflow-y: auto"
+                >
+                  {{ podcast.transcript|linebreaks }}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <!-- Pagination -->
+          {% if podcasts.has_other_pages %}
+          <nav aria-label="Podcasts pagination">
+            <ul class="pagination pagination-sm justify-content-center">
+              {% if podcasts.has_previous %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ podcasts.previous_page_number }}"
+                >
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% endif %}
+
+              <li class="page-item active">
+                <span class="page-link">{{ podcasts.number }}</span>
+              </li>
+
+              {% if podcasts.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ podcasts.next_page_number }}"
+                >
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %} {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-microphone fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No podcasts generated yet</h5>
+            <p class="text-muted">
+              Create your first AI-generated research podcast using the form on
+              the left.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features Overview -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Podcast Generation Features</h5>
+        <div class="row">
+          <div class="col-md-2 text-center">
+            <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+            <h6>Summary Style</h6>
+            <p class="small text-muted">Concise overview</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-comments fa-2x text-success mb-2"></i>
+            <h6>Interview Style</h6>
+            <p class="small text-muted">Q&A format</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-users fa-2x text-warning mb-2"></i>
+            <h6>Debate Style</h6>
+            <p class="small text-muted">Multiple perspectives</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-graduation-cap fa-2x text-info mb-2"></i>
+            <h6>Educational</h6>
+            <p class="small text-muted">Teaching format</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-volume-up fa-2x text-danger mb-2"></i>
+            <h6>Multiple Voices</h6>
+            <p class="small text-muted">6 voice options</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-download fa-2x text-secondary mb-2"></i>
+            <h6>Download</h6>
+            <p class="small text-muted">MP3 export</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends "core/base.html" %} {% block title %}Enhanced Search - Research
+Assistant{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Search Form -->
+    <div class="col-lg-4 col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-search me-2"></i>Enhanced Literature Search
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <!-- Query Input -->
+            <div class="mb-3">
+              <label for="query" class="form-label">Search Query</label>
+              <input
+                type="text"
+                class="form-control"
+                id="query"
+                name="query"
+                value="{{ query }}"
+                placeholder="Enter keywords, authors, or topics..."
+                required
+              />
+            </div>
+
+            <!-- Sources Selection -->
+            <div class="mb-3">
+              <label class="form-label">Data Sources</label>
+              {% for source in available_sources %}
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="sources"
+                  value="{{ source.id }}"
+                  id="source_{{ source.id }}"
+                  checked
+                />
+                <label class="form-check-label" for="source_{{ source.id }}">
+                  <strong>{{ source.name }}</strong>
+                  <small class="text-muted d-block"
+                    >{{ source.description }}</small
+                  >
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Date Filters -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <label for="start_date" class="form-label">From</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="start_date"
+                  name="start_date"
+                />
+              </div>
+              <div class="col-6">
+                <label for="end_date" class="form-label">To</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="end_date"
+                  name="end_date"
+                />
+              </div>
+            </div>
+
+            <!-- Additional Filters -->
+            <div class="mb-3">
+              <label for="min_citations" class="form-label"
+                >Minimum Citations</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="min_citations"
+                name="min_citations"
+                min="0"
+                placeholder="e.g., 10"
+              />
+            </div>
+
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="open_access_only"
+                name="open_access_only"
+              />
+              <label class="form-check-label" for="open_access_only">
+                Open Access Only
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-search me-2"></i>Search Literature
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Recent Searches -->
+      {% if recent_searches %}
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Recent Searches</h6>
+        </div>
+        <div class="card-body">
+          {% for search in recent_searches %}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-truncate">{{ search.query }}</small>
+            <span class="badge bg-secondary">{{ search.results_count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Search Results -->
+    <div class="col-lg-8 col-md-7">
+      {% if query %}
+      <div class="card shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">Search Results for "{{ query }}"</h5>
+          <span class="badge bg-primary">{{ total_results }} results</span>
+        </div>
+        <div class="card-body">
+          {% if results %} {% for paper in results %}
+          <div class="border-bottom pb-3 mb-3">
+            <h6 class="mb-2">
+              {% if paper.url %}
+              <a
+                href="{{ paper.url }}"
+                target="_blank"
+                class="text-decoration-none"
+              >
+                {{ paper.title }}
+              </a>
+              {% else %} {{ paper.title }} {% endif %}
+            </h6>
+
+            {% if paper.authors %}
+            <p class="text-muted mb-1">
+              <i class="fas fa-users me-1"></i>
+              {% for author in paper.authors %} {{ author }}{% if not
+              forloop.last %}, {% endif %} {% endfor %}
+            </p>
+            {% endif %} {% if paper.abstract %}
+            <p class="text-secondary small mb-2">
+              {{ paper.abstract|truncatewords:30 }}
+            </p>
+            {% endif %}
+
+            <div class="d-flex gap-3 small text-muted">
+              {% if paper.published_date %}
+              <span
+                ><i class="fas fa-calendar me-1"></i>{{ paper.published_date
+                }}</span
+              >
+              {% endif %} {% if paper.citation_count %}
+              <span
+                ><i class="fas fa-quote-right me-1"></i>{{ paper.citation_count
+                }} citations</span
+              >
+              {% endif %} {% if paper.source %}
+              <span
+                ><i class="fas fa-database me-1"></i>{{ paper.source }}</span
+              >
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No results found</h5>
+            <p class="text-muted">
+              Try adjusting your search terms or filters.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <!-- Welcome Message -->
+      <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-search fa-4x text-primary mb-4"></i>
+          <h3 class="mb-3">Enhanced Literature Search</h3>
+          <p class="text-muted lead mb-4">
+            Search across multiple academic databases and repositories to find
+            relevant research papers.
+          </p>
+          <div class="row text-start">
+            <div class="col-md-6">
+              <h5>
+                <i class="fas fa-database text-primary me-2"></i>Multiple
+                Sources
+              </h5>
+              <p class="text-muted">
+                Search arXiv, Semantic Scholar, CrossRef, and more.
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h5>
+                <i class="fas fa-filter text-primary me-2"></i>Advanced Filters
+              </h5>
+              <p class="text-muted">
+                Filter by date, citations, open access status.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

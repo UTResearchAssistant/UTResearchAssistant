@@ -1,0 +1,368 @@
+{% extends "core/base.html" %} {% block title %}Video Analyzer - Research
+Assistant{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Video Analysis Form -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-video me-2"></i>Analyze Research Video
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Video Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                placeholder="e.g., Machine Learning Fundamentals Lecture"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="video_url" class="form-label">Video URL</label>
+              <input
+                type="url"
+                class="form-control"
+                id="video_url"
+                name="video_url"
+                placeholder="https://youtube.com/watch?v=..."
+                required
+              />
+              <div class="form-text">
+                Supported: YouTube, Vimeo, and direct video links
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="video_type" class="form-label">Video Type</label>
+              <select
+                class="form-select"
+                id="video_type"
+                name="video_type"
+                required
+              >
+                {% for value, label in video_types %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="analysis_type" class="form-label"
+                >Analysis Type</label
+              >
+              <select
+                class="form-select"
+                id="analysis_type"
+                name="analysis_type"
+                required
+              >
+                <option value="comprehensive">Comprehensive Analysis</option>
+                <option value="summary">Quick Summary</option>
+                <option value="transcript">Transcript Only</option>
+                <option value="concepts">Key Concepts</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-danger w-100">
+              <i class="fas fa-play me-2"></i>Analyze Video
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Analysis Stats -->
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Analysis Statistics
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <h5 class="text-danger">{{ analyses.paginator.count }}</h5>
+              <p class="text-muted small mb-0">Total Analyses</p>
+            </div>
+            <div class="col-6">
+              <h5 class="text-success">{{ analyses.object_list|length }}</h5>
+              <p class="text-muted small mb-0">Completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Analyses -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">
+            <i class="fas fa-list me-2"></i>Video Analyses
+          </h5>
+          <span class="badge bg-primary"
+            >{{ analyses.paginator.count }} total</span
+          >
+        </div>
+        <div class="card-body">
+          {% if analyses %} {% for analysis in analyses %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-1">{{ analysis.title }}</h6>
+                <small class="text-muted"
+                  >{{ analysis.created_at|date:"M d, Y H:i" }}</small
+                >
+              </div>
+              <span
+                class="badge bg-{% if analysis.processing_status == 'completed' %}success{% elif analysis.processing_status == 'processing' %}warning{% else %}danger{% endif %}"
+              >
+                {{
+                analysis.get_processing_status_display|default:analysis.processing_status
+                }}
+              </span>
+            </div>
+
+            <div class="mb-2">
+              <span class="badge bg-light text-dark"
+                >{{ analysis.get_video_type_display }}</span
+              >
+              {% if analysis.processing_time %}
+              <small class="text-muted ms-2">
+                <i class="fas fa-clock me-1"></i>{{
+                analysis.processing_time|floatformat:1 }}s
+              </small>
+              {% endif %}
+            </div>
+
+            {% if analysis.video_url %}
+            <p class="small text-muted mb-2">
+              <i class="fas fa-link me-1"></i>
+              <a
+                href="{{ analysis.video_url }}"
+                target="_blank"
+                class="text-decoration-none"
+              >
+                {{ analysis.video_url|truncatechars:60 }}
+              </a>
+            </p>
+            {% endif %} {% if analysis.processing_status == 'completed' %} {% if
+            analysis.summary %}
+            <div class="mb-3">
+              <h6 class="small fw-bold">Summary:</h6>
+              <p class="small text-secondary">
+                {{ analysis.summary|truncatewords:50 }}
+              </p>
+            </div>
+            {% endif %}
+
+            <div class="mb-2">
+              <button
+                class="btn btn-sm btn-outline-primary"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#analysis-{{ analysis.id }}"
+                aria-expanded="false"
+              >
+                <i class="fas fa-eye me-1"></i>View Full Analysis
+              </button>
+              {% if analysis.video_url %}
+              <a
+                href="{{ analysis.video_url }}"
+                target="_blank"
+                class="btn btn-sm btn-outline-secondary ms-1"
+              >
+                <i class="fas fa-external-link-alt me-1"></i>Open Video
+              </a>
+              {% endif %}
+            </div>
+
+            <div class="collapse mt-3" id="analysis-{{ analysis.id }}">
+              <div class="bg-light p-3 rounded">
+                {% if analysis.transcript %}
+                <div class="mb-3">
+                  <h6>Transcript:</h6>
+                  <div
+                    class="bg-white p-2 rounded border small"
+                    style="max-height: 200px; overflow-y: auto"
+                  >
+                    {{ analysis.transcript|linebreaks }}
+                  </div>
+                </div>
+                {% endif %} {% if analysis.key_concepts %}
+                <div class="mb-3">
+                  <h6>Key Concepts:</h6>
+                  <div class="d-flex flex-wrap gap-1">
+                    {% for concept in analysis.key_concepts_list|slice:":10" %}
+                    <span class="badge bg-primary">{{ concept }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endif %} {% if analysis.topics %}
+                <div class="mb-3">
+                  <h6>Topics:</h6>
+                  <div class="d-flex flex-wrap gap-1">
+                    {% for topic in analysis.topics_list|slice:":8" %}
+                    <span class="badge bg-info">{{ topic }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endif %} {% if analysis.timeline %}
+                <div class="mb-3">
+                  <h6>Timeline:</h6>
+                  <ul class="list-unstyled small">
+                    {% for item in analysis.timeline_list|slice:":5" %}
+                    <li class="mb-1">
+                      <span class="fw-bold"
+                        >{{ item.timestamp|default:"0:00" }}:</span
+                      >
+                      {{ item.description|default:item }}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %} {% if analysis.sentiment_analysis %}
+                <div class="mb-0">
+                  <h6>Sentiment Analysis:</h6>
+                  <div class="progress mb-1" style="height: 20px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: {{ analysis.sentiment_analysis.positive|default:0 }}%"
+                    >
+                      Positive
+                    </div>
+                    <div
+                      class="progress-bar bg-warning"
+                      role="progressbar"
+                      style="width: {{ analysis.sentiment_analysis.neutral|default:0 }}%"
+                    >
+                      Neutral
+                    </div>
+                    <div
+                      class="progress-bar bg-danger"
+                      role="progressbar"
+                      style="width: {{ analysis.sentiment_analysis.negative|default:0 }}%"
+                    >
+                      Negative
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %} {% if analysis.processing_status == 'failed' %}
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Analysis failed: {{ analysis.error_message|default:"Unknown error
+              occurred" }}
+            </div>
+            {% endif %} {% if analysis.processing_status == 'processing' %}
+            <div class="alert alert-info">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              Analysis in progress... This may take a few minutes.
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <!-- Pagination -->
+          {% if analyses.has_other_pages %}
+          <nav aria-label="Video analyses pagination">
+            <ul class="pagination pagination-sm justify-content-center">
+              {% if analyses.has_previous %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ analyses.previous_page_number }}"
+                >
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% endif %}
+
+              <li class="page-item active">
+                <span class="page-link">{{ analyses.number }}</span>
+              </li>
+
+              {% if analyses.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ analyses.next_page_number }}"
+                >
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %} {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-video fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No video analyses yet</h5>
+            <p class="text-muted">
+              Upload a research video URL to get started with AI-powered
+              analysis.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features Overview -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Video Analysis Features</h5>
+        <div class="row">
+          <div class="col-md-2 text-center">
+            <i class="fas fa-closed-captioning fa-2x text-primary mb-2"></i>
+            <h6>Transcription</h6>
+            <p class="small text-muted">Automatic speech-to-text</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-lightbulb fa-2x text-warning mb-2"></i>
+            <h6>Key Concepts</h6>
+            <p class="small text-muted">Extract main ideas</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-list-ol fa-2x text-info mb-2"></i>
+            <h6>Timeline</h6>
+            <p class="small text-muted">Topic progression</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-tags fa-2x text-success mb-2"></i>
+            <h6>Topics</h6>
+            <p class="small text-muted">Content categorization</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+            <h6>Sentiment</h6>
+            <p class="small text-muted">Emotional analysis</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-file-alt fa-2x text-secondary mb-2"></i>
+            <h6>Summary</h6>
+            <p class="small text-muted">Condensed overview</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

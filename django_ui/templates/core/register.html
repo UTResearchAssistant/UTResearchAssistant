@@ -1,0 +1,270 @@
+{% extends "core/base.html" %} {% load static %} {% block title %}Register -
+Enhanced Research Assistant{% endblock %} {% block page_header %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="bg-gradient bg-success text-white rounded-3 p-4 mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-6 fw-bold mb-3">
+            <i class="fas fa-user-plus me-3"></i>
+            Join the Research Community
+          </h1>
+          <p class="lead mb-0">
+            Create your account to access AI-powered research tools and
+            accelerate your work.
+          </p>
+        </div>
+        <div class="col-md-4 text-center">
+          <i class="fas fa-graduation-cap fa-6x opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-success text-white text-center">
+        <h4 class="mb-0">
+          <i class="fas fa-user-plus me-2"></i>Create Your Account
+        </h4>
+        <small>Join thousands of researchers worldwide</small>
+      </div>
+      <div class="card-body p-4">
+        {% if messages %} {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        {% endfor %} {% endif %}
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <!-- Personal Information -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label
+                for="{{ form.first_name.id_for_label }}"
+                class="form-label"
+              >
+                <i class="fas fa-user me-1"></i>First Name *
+              </label>
+              {{ form.first_name }} {% if form.first_name.errors %}
+              <div class="text-danger small mt-1">
+                {% for error in form.first_name.errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                <i class="fas fa-user me-1"></i>Last Name *
+              </label>
+              {{ form.last_name }} {% if form.last_name.errors %}
+              <div class="text-danger small mt-1">
+                {% for error in form.last_name.errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Account Information -->
+          <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label">
+              <i class="fas fa-at me-1"></i>Username *
+            </label>
+            {{ form.username }}
+            <div class="form-text">
+              Choose a unique username for your account.
+            </div>
+            {% if form.username.errors %}
+            <div class="text-danger small mt-1">
+              {% for error in form.username.errors %}
+              <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label">
+              <i class="fas fa-envelope me-1"></i>Email Address *
+            </label>
+            {{ form.email }}
+            <div class="form-text">
+              We'll use this for notifications and account recovery.
+            </div>
+            {% if form.email.errors %}
+            <div class="text-danger small mt-1">
+              {% for error in form.email.errors %}
+              <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="{{ form.password1.id_for_label }}" class="form-label">
+              <i class="fas fa-lock me-1"></i>Password *
+            </label>
+            {{ form.password1 }}
+            <div class="form-text">
+              <small>
+                <i class="fas fa-info-circle me-1"></i>
+                Your password must contain at least 8 characters and cannot be
+                entirely numeric.
+              </small>
+            </div>
+            {% if form.password1.errors %}
+            <div class="text-danger small mt-1">
+              {% for error in form.password1.errors %}
+              <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.password2.id_for_label }}" class="form-label">
+              <i class="fas fa-lock me-1"></i>Confirm Password *
+            </label>
+            {{ form.password2 }} {% if form.password2.errors %}
+            <div class="text-danger small mt-1">
+              {% for error in form.password2.errors %}
+              <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="mb-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="terms"
+                required
+              />
+              <label class="form-check-label" for="terms">
+                I agree to the
+                <a href="#" class="text-decoration-none">Terms of Service</a>
+                and
+                <a href="#" class="text-decoration-none">Privacy Policy</a> *
+              </label>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="fas fa-user-plus me-2"></i>Create Account
+            </button>
+          </div>
+        </form>
+
+        <hr class="my-4" />
+
+        <div class="text-center">
+          <p class="text-muted mb-3">Already have an account?</p>
+          <a href="{% url 'login' %}" class="btn btn-outline-primary">
+            <i class="fas fa-sign-in-alt me-2"></i>Sign In Instead
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits Card -->
+    <div class="card mt-4 border-0 bg-light">
+      <div class="card-body">
+        <h6 class="card-title text-center mb-3">
+          <i class="fas fa-gift me-2"></i>What You Get With Your Account
+        </h6>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-start">
+              <i class="fas fa-search text-primary me-3 mt-1"></i>
+              <div>
+                <strong>Enhanced Literature Search</strong>
+                <p class="small text-muted mb-0">
+                  Search across multiple academic databases with AI-powered
+                  insights.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-start">
+              <i class="fas fa-podcast text-success me-3 mt-1"></i>
+              <div>
+                <strong>Podcast Generation</strong>
+                <p class="small text-muted mb-0">
+                  Transform research papers into engaging audio content.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-start">
+              <i class="fas fa-video text-info me-3 mt-1"></i>
+              <div>
+                <strong>Video Analysis</strong>
+                <p class="small text-muted mb-0">
+                  Analyze research videos with automatic transcription.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-start">
+              <i class="fas fa-users text-warning me-3 mt-1"></i>
+              <div>
+                <strong>Collaboration Tools</strong>
+                <p class="small text-muted mb-0">
+                  Connect and collaborate with other researchers.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .bg-gradient {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  }
+
+  .card {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+
+  .text-muted a {
+    color: #6c757d !important;
+  }
+
+  .text-muted a:hover {
+    color: #495057 !important;
+  }
+</style>
+{% endblock %}

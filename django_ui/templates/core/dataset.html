@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dataset Management{% endblock %}
+
+{% block content %}
+<h1>Dataset Management</h1>
+<p>Download status: {{ download_status }}</p>
+<p>Prepare status: {{ prepare_status }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" name="action" value="download">Download Dataset</button>
+  <button type="submit" name="action" value="prepare" {% if download_status != 'completed' %}disabled{% endif %}>Prepare Dataset</button>
+</form>
+{% endblock %}

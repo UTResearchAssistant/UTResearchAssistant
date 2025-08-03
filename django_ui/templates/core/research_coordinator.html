@@ -1,0 +1,335 @@
+{% extends "core/base.html" %} {% load static %} {% block title %}Research
+Coordinator - Multi-Agent Projects{% endblock %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-4xl font-bold text-gray-800 mb-2">Research Coordinator</h1>
+  <p class="text-lg text-gray-600 mb-8">
+    Orchestrate complex research projects with multiple AI agents.
+  </p>
+
+  <!-- Create New Project Form -->
+  <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+      Create New Research Project
+    </h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create_project" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700"
+            >Project Title</label
+          >
+          <input
+            type="text"
+            name="title"
+            id="title"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="e.g., Analysis of AI in Healthcare"
+          />
+        </div>
+        <div>
+          <label for="keywords" class="block text-sm font-medium text-gray-700"
+            >Keywords (comma-separated)</label
+          >
+          <input
+            type="text"
+            name="keywords"
+            id="keywords"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="AI, healthcare, diagnostics"
+          />
+        </div>
+        <div class="md:col-span-2">
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700"
+            >Project Description</label
+          >
+          <textarea
+            name="description"
+            id="description"
+            rows="3"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="A brief overview of the research project's goals and scope."
+          ></textarea>
+        </div>
+        <div class="md:col-span-2">
+          <label
+            for="objectives"
+            class="block text-sm font-medium text-gray-700"
+            >Objectives (one per line)</label
+          >
+          <textarea
+            name="objectives"
+            id="objectives"
+            rows="3"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="1. Analyze current literature...&#10;2. Identify key trends..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="mt-6">
+        <button
+          type="submit"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Create Project
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Existing Projects -->
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+      My Research Projects
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Title
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Status
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Created
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for project in projects %}
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">
+                {{ project.title }}
+              </div>
+              <div class="text-sm text-gray-500">{{ project.keywords }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if project.status == 'completed' %}
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                >Completed</span
+              >
+              {% elif project.status == 'processing' %}
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                >Processing</span
+              >
+              {% else %}
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+                >Pending</span
+              >
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ project.created_at|date:"Y-m-d H:i" }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              {% if project.status == 'pending' %}
+              <form method="post" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="execute_project" />
+                <input
+                  type="hidden"
+                  name="project_id"
+                  value="{{ project.id }}"
+                />
+                <button
+                  type="submit"
+                  class="text-indigo-600 hover:text-indigo-900"
+                >
+                  Execute
+                </button>
+              </form>
+              {% endif %} {% if project.status == 'completed' %}
+              <button
+                onclick="viewResults('{{ project.id }}')"
+                class="text-green-600 hover:text-green-900 ml-4"
+              >
+                View Results
+              </button>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+              No research projects found. Create one to get started!
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if projects.has_other_pages %}
+    <div class="mt-6">
+      <nav
+        class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+        aria-label="Pagination"
+      >
+        {% if projects.has_previous %}
+        <a
+          href="?page={{ projects.previous_page_number }}"
+          class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          <span class="sr-only">Previous</span>
+          <!-- Heroicon name: solid/chevron-left -->
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+        {% endif %}
+
+        <span
+          class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+        >
+          Page {{ projects.number }} of {{ projects.paginator.num_pages }}
+        </span>
+
+        {% if projects.has_next %}
+        <a
+          href="?page={{ projects.next_page_number }}"
+          class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          <span class="sr-only">Next</span>
+          <!-- Heroicon name: solid/chevron-right -->
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+        {% endif %}
+      </nav>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Results Modal -->
+<div
+  id="resultsModal"
+  class="fixed z-10 inset-0 overflow-y-auto hidden"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <div
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+      aria-hidden="true"
+    ></div>
+    <span
+      class="hidden sm:inline-block sm:align-middle sm:h-screen"
+      aria-hidden="true"
+      >&#8203;</span
+    >
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900"
+              id="modal-title"
+            >
+              Research Project Results
+            </h3>
+            <div class="mt-2">
+              <pre
+                id="resultsContent"
+                class="bg-gray-100 p-4 rounded-md text-sm overflow-x-auto max-h-96"
+              ></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button
+          type="button"
+          onclick="closeModal()"
+          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function viewResults(projectId) {
+    const modal = document.getElementById("resultsModal");
+    const resultsContent = document.getElementById("resultsContent");
+    resultsContent.textContent = "Loading...";
+    modal.classList.remove("hidden");
+
+    fetch(window.location.href, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: `action=view_results&project_id=${projectId}`,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        resultsContent.textContent = JSON.stringify(data, null, 2);
+      })
+      .catch((error) => {
+        resultsContent.textContent = "Error loading results: " + error;
+      });
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("resultsModal");
+    modal.classList.add("hidden");
+  }
+</script>
+{% endblock %}

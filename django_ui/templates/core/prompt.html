@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Prompt Engineering{% endblock %}
+
+{% block content %}
+<h1>Prompt Engineering</h1>
+<p>Enter free text to send to the summariser.  This allows you to experiment with prompt engineering and see how the model responds.</p>
+<form method="post">
+  {% csrf_token %}
+  <textarea name="prompt" rows="4" cols="80" placeholder="Enter your prompt here..."></textarea><br />
+  <button type="submit">Submit</button>
+</form>
+{% if output %}
+  <h2>Output</h2>
+  <pre>{{ output }}</pre>
+{% endif %}
+{% endblock %}

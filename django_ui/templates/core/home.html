@@ -1,0 +1,473 @@
+{% extends "core/base.html" %} {% load static %} {% block title %}Dashboard -
+Enhanced Research Assistant{% endblock %} {% block page_header %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="bg-gradient bg-primary text-white rounded-3 p-4 mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-5 fw-bold mb-3">
+            <i class="fas fa-graduation-cap me-3"></i>
+            Welcome to Enhanced Research Assistant v2.0
+          </h1>
+          <p class="lead mb-0">
+            AI-powered tools for modern researchers. Search literature, generate
+            podcasts, analyze videos, and collaborate with peers - all in one
+            platform.
+          </p>
+        </div>
+        <div class="col-md-4 text-center">
+          <i class="fas fa-brain fa-6x opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block content %} {% if not user.is_authenticated %}
+<!-- Welcome Section for Non-Authenticated Users -->
+<div class="row mb-5">
+  <div class="col-12 text-center">
+    <div class="card border-0 shadow-lg">
+      <div class="card-body p-5">
+        <h2 class="card-title mb-4">
+          Get Started with Advanced Research Tools
+        </h2>
+        <p class="card-text lead mb-4">
+          Join thousands of researchers using AI-powered tools to accelerate
+          their work.
+        </p>
+        <a href="{% url 'register' %}" class="btn btn-success btn-lg me-3">
+          <i class="fas fa-user-plus me-2"></i>Sign Up Free
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3">
+          <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+        <a href="#features" class="btn btn-outline-primary btn-lg">
+          <i class="fas fa-info-circle me-2"></i>Learn More
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<!-- Dashboard for Authenticated Users -->
+<div class="row mb-4">
+  <!-- Quick Stats -->
+  <div class="col-md-3 mb-3">
+    <div class="card feature-card bg-primary text-white">
+      <div class="card-body text-center">
+        <i class="fas fa-search fa-2x mb-2"></i>
+        <h5>Recent Searches</h5>
+        <h3>{{ recent_searches|length }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card feature-card bg-success text-white">
+      <div class="card-body text-center">
+        <i class="fas fa-bookmark fa-2x mb-2"></i>
+        <h5>Bookmarked Papers</h5>
+        <h3>{{ bookmarked_papers|length }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card feature-card bg-info text-white">
+      <div class="card-body text-center">
+        <i class="fas fa-podcast fa-2x mb-2"></i>
+        <h5>Generated Podcasts</h5>
+        <h3>{{ recent_podcasts|length }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card feature-card bg-warning text-white">
+      <div class="card-body text-center">
+        <i class="fas fa-bell fa-2x mb-2"></i>
+        <h5>Active Alerts</h5>
+        <h3>{{ pending_alerts }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card feature-card h-100">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Searches</h5>
+      </div>
+      <div class="card-body">
+        {% if recent_searches %}
+        <div class="list-group list-group-flush">
+          {% for search in recent_searches %}
+          <div class="list-group-item border-0 px-0">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="mb-1">{{ search.query|truncatechars:50 }}</h6>
+                <small class="text-muted">
+                  {{ search.results_count }} results • {{
+                  search.created_at|timesince }} ago
+                </small>
+              </div>
+              <span class="badge bg-secondary">{{ search.search_type }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="text-center mt-3">
+          <a
+            href="{% url 'enhanced_search' %}"
+            class="btn btn-outline-primary btn-sm"
+          >
+            <i class="fas fa-search me-1"></i>New Search
+          </a>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No searches yet</p>
+          <a href="{% url 'enhanced_search' %}" class="btn btn-primary">
+            <i class="fas fa-search me-2"></i>Start Searching
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card feature-card h-100">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-project-diagram me-2"></i>Active Projects
+        </h5>
+      </div>
+      <div class="card-body">
+        {% if active_projects %}
+        <div class="list-group list-group-flush">
+          {% for project in active_projects %}
+          <div class="list-group-item border-0 px-0">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="mb-1">{{ project.title }}</h6>
+                <small class="text-muted"
+                  >{{ project.description|truncatechars:60 }}</small
+                >
+              </div>
+              <span
+                class="badge bg-{% if project.status == 'active' %}success{% elif project.status == 'planning' %}warning{% else %}secondary{% endif %}"
+              >
+                {{ project.get_status_display }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+          <i class="fas fa-project-diagram fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No active projects</p>
+          <a href="{% url 'collaboration' %}" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Create Project
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Podcasts -->
+{% if recent_podcasts %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card feature-card">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-podcast me-2"></i>Recent Podcasts</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          {% for podcast in recent_podcasts %}
+          <div class="col-md-4 mb-3">
+            <div class="podcast-player">
+              <h6 class="mb-2">{{ podcast.title|truncatechars:30 }}</h6>
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <small class="text-muted"
+                  >{{ podcast.style|title }} Style</small
+                >
+                <span class="badge bg-primary"
+                  >{{ podcast.duration_seconds|floatformat:0 }}s</span
+                >
+              </div>
+              {% if podcast.audio_file %}
+              <audio controls class="w-100" style="height: 30px">
+                <source src="{{ podcast.audio_file.url }}" type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+              {% endif %}
+              <div class="mt-2">
+                <small class="text-muted">
+                  <i class="fas fa-play me-1"></i>{{ podcast.play_count }} plays
+                </small>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="text-center">
+          <a href="{% url 'podcast_generator' %}" class="btn btn-outline-info">
+            <i class="fas fa-podcast me-2"></i>Generate More Podcasts
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %} {% endif %}
+
+<!-- Features Section -->
+<div class="row mb-5" id="features">
+  <div class="col-12">
+    <h2 class="text-center mb-5">
+      <i class="fas fa-star me-2"></i>Enhanced Features
+    </h2>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-search fa-3x text-primary"></i>
+        </div>
+        <h5 class="card-title">Enhanced Search</h5>
+        <p class="card-text">
+          Search across multiple academic databases including arXiv, Semantic
+          Scholar, and CrossRef with advanced filtering and multilingual
+          support.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'enhanced_search' %}" class="btn btn-primary">
+          <i class="fas fa-search me-2"></i>Start Searching
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-podcast fa-3x text-success"></i>
+        </div>
+        <h5 class="card-title">Podcast Generation</h5>
+        <p class="card-text">
+          Transform research papers into engaging audio podcasts with multiple
+          styles: summaries, interviews, debates, and educational formats.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'podcast_generator' %}" class="btn btn-success">
+          <i class="fas fa-podcast me-2"></i>Generate Podcast
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-video fa-3x text-info"></i>
+        </div>
+        <h5 class="card-title">Video Analysis</h5>
+        <p class="card-text">
+          Analyze research videos and lectures with automatic transcription, key
+          concept extraction, and timeline generation.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'video_analyzer' %}" class="btn btn-info">
+          <i class="fas fa-video me-2"></i>Analyze Video
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-pen-fancy fa-3x text-warning"></i>
+        </div>
+        <h5 class="card-title">Writing Assistant</h5>
+        <p class="card-text">
+          AI-powered academic writing support for literature reviews, abstracts,
+          and papers with style improvements and citation management.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'writing_assistant' %}" class="btn btn-warning">
+          <i class="fas fa-pen-fancy me-2"></i>Get Writing Help
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-bell fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title">Research Alerts</h5>
+        <p class="card-text">
+          Stay updated with personalized alerts for new papers, author
+          publications, and research developments in your field.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'research_alerts' %}" class="btn btn-danger">
+          <i class="fas fa-bell me-2"></i>Manage Alerts
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-4">
+    <div class="card feature-card h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-users fa-3x text-purple"></i>
+        </div>
+        <h5 class="card-title">Collaboration</h5>
+        <p class="card-text">
+          Connect with other researchers, share projects, collaborate on papers,
+          and build your academic network.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'collaboration' %}" class="btn btn-outline-primary">
+          <i class="fas fa-users me-2"></i>Collaborate
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+{% if user.is_authenticated %}
+<div class="row mb-5">
+  <div class="col-12">
+    <div class="card feature-card">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-md-3 mb-3">
+            <a
+              href="{% url 'enhanced_search' %}"
+              class="btn btn-outline-primary btn-lg w-100"
+            >
+              <i class="fas fa-search fa-2x d-block mb-2"></i>
+              Search Papers
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a
+              href="{% url 'podcast_generator' %}"
+              class="btn btn-outline-success btn-lg w-100"
+            >
+              <i class="fas fa-podcast fa-2x d-block mb-2"></i>
+              Create Podcast
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a
+              href="{% url 'writing_assistant' %}"
+              class="btn btn-outline-warning btn-lg w-100"
+            >
+              <i class="fas fa-pen-fancy fa-2x d-block mb-2"></i>
+              Writing Help
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a
+              href="{% url 'research_alerts' %}"
+              class="btn btn-outline-danger btn-lg w-100"
+            >
+              <i class="fas fa-bell fa-2x d-block mb-2"></i>
+              Set Alerts
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Technology Stack -->
+<div class="row">
+  <div class="col-12">
+    <div class="card feature-card bg-light">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-4">
+          <i class="fas fa-cogs me-2"></i>Powered by Advanced Technology
+        </h5>
+        <div class="row">
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fas fa-brain fa-2x text-primary mb-2"></i>
+              <small class="d-block">OpenAI GPT</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fab fa-python fa-2x text-success mb-2"></i>
+              <small class="d-block">Django</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fas fa-database fa-2x text-info mb-2"></i>
+              <small class="d-block">PostgreSQL</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fas fa-cloud fa-2x text-warning mb-2"></i>
+              <small class="d-block">Cloud APIs</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fas fa-microphone fa-2x text-danger mb-2"></i>
+              <small class="d-block">Text-to-Speech</small>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="p-2">
+              <i class="fas fa-globe fa-2x text-purple mb-2"></i>
+              <small class="d-block">Multi-Language</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .text-purple {
+    color: #8b5cf6;
+  }
+  .bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+</style>
+{% endblock %}

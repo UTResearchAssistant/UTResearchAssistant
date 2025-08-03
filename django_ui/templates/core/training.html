@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Model Training{% endblock %}
+
+{% block content %}
+<h1>Model Training</h1>
+<p>Status: {{ training_status }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Start Training</button>
+</form>
+{% endblock %}

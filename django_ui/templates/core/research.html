@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Deep Research{% endblock %}
+
+{% block content %}
+<h1>Deep Research</h1>
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="query" placeholder="Enter a research question" style="width: 60%;" />
+  <button type="submit">Search</button>
+</form>
+{% if answer %}
+  <h2>Answer</h2>
+  <p>{{ answer }}</p>
+  {% if sources %}
+    <h3>Sources</h3>
+    <ul>
+      {% for s in sources %}
+        <li>{{ s }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+{% endblock %}

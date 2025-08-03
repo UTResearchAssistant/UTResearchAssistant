@@ -1,0 +1,112 @@
+Django==4.2.23
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+sqlalchemy==2.0.23
+alembic==1.12.1
+asyncpg==0.29.0
+aiohttp==3.9.1
+aiofiles==23.2.1
+
+# Academic Research APIs
+arxiv==1.4.8
+scholarly==1.7.11
+requests==2.31.0
+beautifulsoup4==4.12.2
+scrapy==2.11.0
+
+# NLP and ML - Using Llama 3.2 3B instead of SentenceTransformer
+transformers==4.36.2
+torch==2.1.2
+accelerate==0.25.0
+# sentence-transformers==2.2.2  # Removed - using Llama 3.2 3B instead
+spacy==3.7.2
+scikit-learn==1.3.2
+numpy==1.24.4
+pandas==2.1.4
+
+# Text Processing
+nltk==3.8.1
+textstat==0.7.3
+wordcloud==1.9.2
+pypdf2==3.0.1
+python-docx==1.1.0
+
+# Visualization
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.17.0
+
+# Database
+psycopg2-binary==2.9.9
+redis==5.0.1
+
+# API clients
+openai==1.6.1
+anthropic==0.7.8
+google-generativeai==0.3.2
+
+# Utilities
+python-dotenv==1.0.0
+pydantic-settings==2.1.0
+httpx==0.25.2
+tenacity==8.2.3
+python-multipart==0.0.6
+
+# Development and Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# Academic Data Processing
+bibtexparser==1.4.1
+crossref-commons==0.12.0
+scholarly-literature-review==0.3.2
+
+# Web Scraping
+selenium==4.16.0
+playwright==1.40.0
+
+# File Processing
+openpyxl==3.1.2
+python-magic==0.4.27
+
+# Async Support
+asyncio-throttle==1.0.2
+aiostream==0.5.2
+
+# Citation and Bibliography
+pybtex==0.24.0
+citeproc-py==0.6.0
+
+# Data Science
+jupyter==1.0.0
+ipykernel==6.27.1
+notebook==7.0.6
+
+# Web Framework Extras
+django-cors-headers==4.3.1
+django-extensions==3.2.3
+whitenoise==6.6.0
+
+# Background Tasks
+celery==5.3.4
+redis==5.0.1
+
+# Monitoring and Logging
+structlog==23.2.0
+sentry-sdk==1.38.0
+
+# Security
+cryptography==41.0.8
+pyjwt==2.8.0
+
+# Image Processing (for figures/charts)
+pillow==10.1.0
+opencv-python==4.8.1.78
+
+# Academic APIs additional
+semanticscholar==0.3.2
+pubmed-parser==0.3.1

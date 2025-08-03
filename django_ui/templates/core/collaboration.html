@@ -1,0 +1,291 @@
+{% extends "core/base.html" %} {% block title %}Collaboration - Research
+Assistant{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Send Collaboration Request -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-handshake me-2"></i>Send Collaboration Request
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="send_request" />
+
+            <div class="mb-3">
+              <label for="recipient_email" class="form-label"
+                >Collaborator Email</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="recipient_email"
+                name="recipient_email"
+                placeholder="colleague@university.edu"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="collaboration_type" class="form-label"
+                >Collaboration Type</label
+              >
+              <select
+                class="form-select"
+                id="collaboration_type"
+                name="collaboration_type"
+                required
+              >
+                {% for value, label in collaboration_types %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Project Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                placeholder="e.g., AI in Healthcare Research"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="4"
+                placeholder="Describe the collaboration opportunity..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-paper-plane me-2"></i>Send Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collaboration Requests -->
+    <div class="col-lg-8">
+      <!-- Received Requests -->
+      <div class="card shadow-sm mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">
+            <i class="fas fa-inbox me-2"></i>Received Requests
+          </h5>
+          <span class="badge bg-warning"
+            >{{ received_requests.count }} pending</span
+          >
+        </div>
+        <div class="card-body">
+          {% if received_requests %} {% for request in received_requests %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-1">{{ request.title }}</h6>
+                <small class="text-muted">
+                  From: {{
+                  request.requester.get_full_name|default:request.requester.username
+                  }} ({{ request.requester.email }})
+                </small>
+              </div>
+              <span
+                class="badge bg-{% if request.status == 'pending' %}warning{% elif request.status == 'accepted' %}success{% else %}secondary{% endif %}"
+              >
+                {{ request.get_status_display }}
+              </span>
+            </div>
+
+            <div class="mb-2">
+              <span class="badge bg-light text-dark"
+                >{{ request.get_collaboration_type_display }}</span
+              >
+              <small class="text-muted ms-2"
+                >{{ request.created_at|date:"M d, Y" }}</small
+              >
+            </div>
+
+            <p class="text-secondary mb-3">{{ request.description }}</p>
+
+            {% if request.status == 'pending' %}
+            <div class="row">
+              <div class="col-md-8">
+                <textarea
+                  class="form-control form-control-sm"
+                  placeholder="Optional response message..."
+                  id="response_message_{{ request.id }}"
+                  rows="2"
+                ></textarea>
+              </div>
+              <div class="col-md-4">
+                <form method="post" class="d-inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="respond" />
+                  <input
+                    type="hidden"
+                    name="request_id"
+                    value="{{ request.id }}"
+                  />
+                  <input type="hidden" name="response" value="accept" />
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm w-100 mb-1"
+                  >
+                    <i class="fas fa-check me-1"></i>Accept
+                  </button>
+                </form>
+                <form method="post" class="d-inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="respond" />
+                  <input
+                    type="hidden"
+                    name="request_id"
+                    value="{{ request.id }}"
+                  />
+                  <input type="hidden" name="response" value="decline" />
+                  <button
+                    type="submit"
+                    class="btn btn-outline-secondary btn-sm w-100"
+                  >
+                    <i class="fas fa-times me-1"></i>Decline
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% elif request.response_message %}
+            <div class="alert alert-light">
+              <strong>Your response:</strong> {{ request.response_message }}
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %} {% else %}
+          <div class="text-center py-4">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No collaboration requests</h5>
+            <p class="text-muted">
+              You'll see collaboration requests from other researchers here.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Sent Requests -->
+      <div class="card shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">
+            <i class="fas fa-paper-plane me-2"></i>Sent Requests
+          </h5>
+          <span class="badge bg-info">{{ sent_requests.count }} sent</span>
+        </div>
+        <div class="card-body">
+          {% if sent_requests %} {% for request in sent_requests %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-1">{{ request.title }}</h6>
+                <small class="text-muted">
+                  To: {{
+                  request.recipient.get_full_name|default:request.recipient.username
+                  }} ({{ request.recipient.email }})
+                </small>
+              </div>
+              <span
+                class="badge bg-{% if request.status == 'pending' %}warning{% elif request.status == 'accepted' %}success{% else %}secondary{% endif %}"
+              >
+                {{ request.get_status_display }}
+              </span>
+            </div>
+
+            <div class="mb-2">
+              <span class="badge bg-light text-dark"
+                >{{ request.get_collaboration_type_display }}</span
+              >
+              <small class="text-muted ms-2"
+                >{{ request.created_at|date:"M d, Y" }}</small
+              >
+              {% if request.responded_at %}
+              <small class="text-muted ms-2"
+                >Responded: {{ request.responded_at|date:"M d, Y" }}</small
+              >
+              {% endif %}
+            </div>
+
+            <p class="text-secondary mb-2">{{ request.description }}</p>
+
+            {% if request.response_message %}
+            <div class="alert alert-light">
+              <strong>Response:</strong> {{ request.response_message }}
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %} {% else %}
+          <div class="text-center py-4">
+            <i class="fas fa-paper-plane fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No sent requests</h5>
+            <p class="text-muted">
+              Start collaborating by sending a request using the form on the
+              left.
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Collaboration Guide -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Collaboration Types</h5>
+        <div class="row">
+          <div class="col-md-2 text-center">
+            <i class="fas fa-flask fa-2x text-primary mb-2"></i>
+            <h6>Research Project</h6>
+            <p class="small text-muted">Joint research initiatives</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-search fa-2x text-success mb-2"></i>
+            <h6>Paper Review</h6>
+            <p class="small text-muted">Peer review collaboration</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-edit fa-2x text-info mb-2"></i>
+            <h6>Co-authoring</h6>
+            <p class="small text-muted">Writing papers together</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-chalkboard-teacher fa-2x text-warning mb-2"></i>
+            <h6>Mentoring</h6>
+            <p class="small text-muted">Academic guidance</p>
+          </div>
+          <div class="col-md-2 text-center">
+            <i class="fas fa-database fa-2x text-secondary mb-2"></i>
+            <h6>Data Sharing</h6>
+            <p class="small text-muted">Research data exchange</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

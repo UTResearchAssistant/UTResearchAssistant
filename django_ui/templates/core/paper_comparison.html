@@ -1,0 +1,630 @@
+{% extends "core/base.html" %} {% block title %}Paper Comparison - Research
+Assistant{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">
+        <i class="fas fa-balance-scale text-info"></i>
+        Paper Comparison Tool
+      </h1>
+      <p class="lead text-muted">
+        Compare multiple research papers side-by-side across various dimensions
+        like methodology, results, and impact.
+      </p>
+    </div>
+  </div>
+
+  <!-- Paper Selection -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-plus"></i>
+            Select Papers to Compare
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" id="comparison-form">
+            {% csrf_token %}
+
+            <!-- Paper 1 -->
+            <div class="paper-input mb-4" data-paper="1">
+              <h6 class="text-primary">
+                <i class="fas fa-file-alt"></i>
+                Paper 1 *
+              </h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="text" class="form-control mb-2"
+                  name="paper1_title" placeholder="Paper title or DOI" required
+                  value="{{ request.POST.paper1_title|default_if_none:"" }}">
+                </div>
+                <div class="col-md-6">
+                  <input type="url" class="form-control mb-2" name="paper1_url"
+                  placeholder="Paper URL (optional)" value="{{
+                  request.POST.paper1_url|default_if_none:"" }}">
+                </div>
+              </div>
+              <textarea
+                class="form-control"
+                name="paper1_abstract"
+                rows="2"
+                placeholder="Abstract (optional for better comparison)"
+              >
+{{ request.POST.paper1_abstract|default_if_none:"" }}</textarea
+              >
+            </div>
+
+            <!-- Paper 2 -->
+            <div class="paper-input mb-4" data-paper="2">
+              <h6 class="text-primary">
+                <i class="fas fa-file-alt"></i>
+                Paper 2 *
+              </h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="text" class="form-control mb-2"
+                  name="paper2_title" placeholder="Paper title or DOI" required
+                  value="{{ request.POST.paper2_title|default_if_none:"" }}">
+                </div>
+                <div class="col-md-6">
+                  <input type="url" class="form-control mb-2" name="paper2_url"
+                  placeholder="Paper URL (optional)" value="{{
+                  request.POST.paper2_url|default_if_none:"" }}">
+                </div>
+              </div>
+              <textarea
+                class="form-control"
+                name="paper2_abstract"
+                rows="2"
+                placeholder="Abstract (optional for better comparison)"
+              >
+{{ request.POST.paper2_abstract|default_if_none:"" }}</textarea
+              >
+            </div>
+
+            <!-- Additional Papers Container -->
+            <div id="additional-papers">
+              {% if request.POST.paper3_title %}
+              <div class="paper-input mb-4" data-paper="3">
+                <h6 class="text-primary">
+                  <i class="fas fa-file-alt"></i>
+                  Paper 3
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger float-end"
+                    onclick="removePaper(3)"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control mb-2"
+                    name="paper3_title" placeholder="Paper title or DOI"
+                    value="{{ request.POST.paper3_title|default_if_none:"" }}">
+                  </div>
+                  <div class="col-md-6">
+                    <input type="url" class="form-control mb-2"
+                    name="paper3_url" placeholder="Paper URL (optional)"
+                    value="{{ request.POST.paper3_url|default_if_none:"" }}">
+                  </div>
+                </div>
+                <textarea
+                  class="form-control"
+                  name="paper3_abstract"
+                  rows="2"
+                  placeholder="Abstract (optional for better comparison)"
+                >
+{{ request.POST.paper3_abstract|default_if_none:"" }}</textarea
+                >
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Add Paper Button -->
+            <div class="mb-3">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                onclick="addPaper()"
+                id="add-paper-btn"
+              >
+                <i class="fas fa-plus"></i>
+                Add Another Paper
+              </button>
+              <small class="text-muted ms-2">(Up to 5 papers total)</small>
+            </div>
+
+            <!-- Comparison Options -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label class="form-label">Comparison Aspects</label>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="aspects"
+                    value="methodology"
+                    checked
+                  />
+                  <label class="form-check-label">Methodology</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="aspects"
+                    value="results"
+                    checked
+                  />
+                  <label class="form-check-label">Results & Findings</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="aspects"
+                    value="impact"
+                    checked
+                  />
+                  <label class="form-check-label">Impact & Citations</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="aspects"
+                    value="novelty"
+                  />
+                  <label class="form-check-label">Novelty Assessment</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Comparison Style</label>
+                <select class="form-select mb-3" name="comparison_style">
+                  <option value="detailed">Detailed Analysis</option>
+                  <option value="summary">Summary Comparison</option>
+                  <option value="visual">Visual Comparison</option>
+                </select>
+
+                <label class="form-label">Focus Area</label>
+                <select class="form-select" name="focus_area">
+                  <option value="general">General Comparison</option>
+                  <option value="technical">Technical Methods</option>
+                  <option value="empirical">Empirical Results</option>
+                  <option value="theoretical">Theoretical Contributions</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-info btn-lg">
+                <i class="fas fa-balance-scale"></i>
+                Compare Papers
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Results -->
+  {% if comparison_results %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-chart-bar"></i>
+            Comparison Results
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Overview Comparison -->
+          <div class="table-responsive mb-5">
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Aspect</th>
+                  {% for paper in comparison_results.papers %}
+                  <th class="text-center">Paper {{ forloop.counter }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Basic Info -->
+                <tr>
+                  <td class="fw-bold">Title</td>
+                  {% for paper in comparison_results.papers %}
+                  <td>
+                    {% if paper.url %}
+                    <a
+                      href="{{ paper.url }}"
+                      target="_blank"
+                      class="text-decoration-none"
+                    >
+                      {{ paper.title|truncatechars:60 }}
+                      <i class="fas fa-external-link-alt ms-1 small"></i>
+                    </a>
+                    {% else %} {{ paper.title|truncatechars:60 }} {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Authors</td>
+                  {% for paper in comparison_results.papers %}
+                  <td>{{ paper.authors|join:", "|truncatechars:50 }}</td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Year</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    <span class="badge bg-primary"
+                      >{{ paper.year|default:"N/A" }}</span
+                    >
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Citation Count</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    <span class="badge bg-info"
+                      >{{ paper.citation_count|default:"N/A" }}</span
+                    >
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <!-- Methodology Comparison -->
+                {% if "methodology" in comparison_results.aspects %}
+                <tr class="table-secondary">
+                  <td class="fw-bold">Methodology</td>
+                  {% for paper in comparison_results.papers %}
+                  <td>
+                    {{ paper.methodology|truncatechars:100|default:"Not
+                    specified" }}
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Data Size</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    {{ paper.data_size|default:"N/A" }}
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Evaluation Method</td>
+                  {% for paper in comparison_results.papers %}
+                  <td>{{ paper.evaluation_method|default:"Not specified" }}</td>
+                  {% endfor %}
+                </tr>
+                {% endif %}
+
+                <!-- Results Comparison -->
+                {% if "results" in comparison_results.aspects %}
+                <tr class="table-warning">
+                  <td class="fw-bold">Key Results</td>
+                  {% for paper in comparison_results.papers %}
+                  <td>
+                    {{ paper.key_results|truncatechars:150|default:"Not
+                    available" }}
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Performance Score</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    {% if paper.performance_score %}
+                    <div class="progress" style="height: 20px">
+                      <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        style="width: {{ paper.performance_score|floatformat:0 }}%"
+                        title="{{ paper.performance_score|floatformat:2 }}"
+                      >
+                        {{ paper.performance_score|floatformat:1 }}%
+                      </div>
+                    </div>
+                    {% else %} N/A {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endif %}
+
+                <!-- Impact Comparison -->
+                {% if "impact" in comparison_results.aspects %}
+                <tr class="table-info">
+                  <td class="fw-bold">Impact Factor</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    {% if paper.impact_factor %}
+                    <span class="badge bg-success"
+                      >{{ paper.impact_factor|floatformat:2 }}</span
+                    >
+                    {% else %} N/A {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Influence Score</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    {% if paper.influence_score %}
+                    <div class="progress" style="height: 15px">
+                      <div
+                        class="progress-bar bg-warning"
+                        role="progressbar"
+                        style="width: {{ paper.influence_score|floatformat:0 }}%"
+                      ></div>
+                    </div>
+                    <small>{{ paper.influence_score|floatformat:1 }}</small>
+                    {% else %} N/A {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endif %}
+
+                <!-- Novelty Assessment -->
+                {% if "novelty" in comparison_results.aspects %}
+                <tr class="table-danger">
+                  <td class="fw-bold">Novelty Score</td>
+                  {% for paper in comparison_results.papers %}
+                  <td class="text-center">
+                    {% if paper.novelty_score %}
+                    <div class="progress" style="height: 15px">
+                      <div
+                        class="progress-bar bg-danger"
+                        role="progressbar"
+                        style="width: {{ paper.novelty_score|floatformat:0 }}%"
+                      ></div>
+                    </div>
+                    <small>{{ paper.novelty_score|floatformat:1 }}</small>
+                    {% else %} N/A {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Detailed Comparisons -->
+          {% if comparison_results.detailed_analysis %}
+          <div class="row">
+            <div class="col-12">
+              <h5 class="text-primary mb-3">
+                <i class="fas fa-microscope"></i>
+                Detailed Analysis
+              </h5>
+
+              {% for analysis in comparison_results.detailed_analysis %}
+              <div class="card mb-3">
+                <div class="card-header">
+                  <h6 class="mb-0">{{ analysis.aspect|title }} Comparison</h6>
+                </div>
+                <div class="card-body">
+                  <p>{{ analysis.summary }}</p>
+
+                  {% if analysis.strengths %}
+                  <div class="row">
+                    {% for paper_idx, strengths in analysis.strengths.items %}
+                    <div
+                      class="col-md-{{ 12|div:comparison_results.papers|length }}"
+                    >
+                      <h6 class="text-success">
+                        Paper {{ paper_idx }} Strengths:
+                      </h6>
+                      <ul class="list-unstyled">
+                        {% for strength in strengths %}
+                        <li class="mb-1">
+                          <i class="fas fa-check text-success me-2"></i>
+                          {{ strength }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Summary and Recommendations -->
+          {% if comparison_results.summary %}
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="card bg-light">
+                <div class="card-header bg-dark text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-lightbulb"></i>
+                    Comparison Summary & Recommendations
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <h6 class="text-primary">Key Findings:</h6>
+                      <p>{{ comparison_results.summary }}</p>
+
+                      {% if comparison_results.recommendations %}
+                      <h6 class="text-success">Recommendations:</h6>
+                      <ul>
+                        {% for recommendation in
+                        comparison_results.recommendations %}
+                        <li>{{ recommendation }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                      {% if comparison_results.best_paper %}
+                      <div class="card border-success">
+                        <div
+                          class="card-header bg-success text-white text-center"
+                        >
+                          <i class="fas fa-trophy"></i>
+                          Overall Best Paper
+                        </div>
+                        <div class="card-body text-center">
+                          <h6>
+                            Paper {{ comparison_results.best_paper.index }}
+                          </h6>
+                          <p class="small">
+                            {{
+                            comparison_results.best_paper.title|truncatechars:60
+                            }}
+                          </p>
+                          <small class="text-muted"
+                            >{{ comparison_results.best_paper.reason }}</small
+                          >
+                        </div>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .paper-input {
+    border-left: 3px solid #17a2b8;
+    padding-left: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+  }
+
+  .table th {
+    min-width: 150px;
+  }
+
+  .progress {
+    background-color: #e9ecef;
+  }
+
+  .card.border-success {
+    border-width: 2px !important;
+  }
+</style>
+
+<script>
+  let paperCount = 2;
+
+  function addPaper() {
+    if (paperCount >= 5) {
+      alert("Maximum 5 papers can be compared at once.");
+      return;
+    }
+
+    paperCount++;
+    const paperHtml = `
+        <div class="paper-input mb-4" data-paper="${paperCount}">
+            <h6 class="text-primary">
+                <i class="fas fa-file-alt"></i>
+                Paper ${paperCount}
+                <button type="button" class="btn btn-sm btn-outline-danger float-end" onclick="removePaper(${paperCount})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" class="form-control mb-2" name="paper${paperCount}_title" 
+                           placeholder="Paper title or DOI">
+                </div>
+                <div class="col-md-6">
+                    <input type="url" class="form-control mb-2" name="paper${paperCount}_url" 
+                           placeholder="Paper URL (optional)">
+                </div>
+            </div>
+            <textarea class="form-control" name="paper${paperCount}_abstract" rows="2" 
+                      placeholder="Abstract (optional for better comparison)"></textarea>
+        </div>
+    `;
+
+    document
+      .getElementById("additional-papers")
+      .insertAdjacentHTML("beforeend", paperHtml);
+
+    if (paperCount >= 5) {
+      document.getElementById("add-paper-btn").style.display = "none";
+    }
+  }
+
+  function removePaper(paperIndex) {
+    const paperElement = document.querySelector(`[data-paper="${paperIndex}"]`);
+    if (paperElement) {
+      paperElement.remove();
+      paperCount--;
+      document.getElementById("add-paper-btn").style.display = "inline-block";
+    }
+  }
+
+  // Form validation
+  document
+    .getElementById("comparison-form")
+    .addEventListener("submit", function (e) {
+      const paper1Title = document
+        .querySelector('[name="paper1_title"]')
+        .value.trim();
+      const paper2Title = document
+        .querySelector('[name="paper2_title"]')
+        .value.trim();
+
+      if (!paper1Title || !paper2Title) {
+        e.preventDefault();
+        alert("Please provide titles for at least the first two papers.");
+      }
+    });
+
+  // Initialize paper count from existing form data
+  window.addEventListener("load", function () {
+    const existingPapers = document.querySelectorAll(".paper-input");
+    paperCount = existingPapers.length;
+
+    if (paperCount >= 5) {
+      document.getElementById("add-paper-btn").style.display = "none";
+    }
+
+    // Animate progress bars
+    const progressBars = document.querySelectorAll(".progress-bar");
+    progressBars.forEach((bar) => {
+      const width = bar.style.width;
+      bar.style.width = "0%";
+      setTimeout(() => {
+        bar.style.transition = "width 1s ease-in-out";
+        bar.style.width = width;
+      }, 100);
+    });
+  });
+</script>
+{% endblock %}

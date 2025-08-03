@@ -1,0 +1,502 @@
+{% extends "core/base.html" %}
+
+{% block title %}Research Recommendations - Research Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-star text-warning"></i>
+                Research Recommendations
+            </h1>
+            <p class="lead text-muted">
+                Get personalized paper recommendations based on your research interests, reading history, and current trends.
+            </p>
+        </div>
+    </div>
+
+    <!-- Recommendation Settings -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cog"></i>
+                        Recommendation Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="interests" class="form-label">Research Interests *</label>
+                                    <textarea class="form-control" id="interests" name="interests" rows="3" 
+                                              placeholder="e.g., machine learning, natural language processing, computer vision..."
+                                              required>{{ request.POST.interests|default_if_none:"" }}</textarea>
+                                    <div class="form-text">Describe your research interests, topics, or keywords</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="context" class="form-label">Current Research Context</label>
+                                    <textarea class="form-control" id="context" name="context" rows="3" 
+                                              placeholder="e.g., working on a thesis about deep learning for healthcare..."
+                                              >{{ request.POST.context|default_if_none:"" }}</textarea>
+                                    <div class="form-text">Provide context about your current research project</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="count" class="form-label">Number of Recommendations</label>
+                                    <select class="form-select" id="count" name="count">
+                                        {% for value, label in recommendation_counts %}
+                                        <option value="{{ value }}" {% if value == "10" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="recency" class="form-label">Time Range</label>
+                                    <select class="form-select" id="recency" name="recency">
+                                        {% for value, label in time_ranges %}
+                                        <option value="{{ value }}" {% if value == "2years" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="sort_by" class="form-label">Sort By</label>
+                                    <select class="form-select" id="sort_by" name="sort_by">
+                                        {% for value, label in sort_options %}
+                                        <option value="{{ value }}" {% if value == "relevance" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="diversity" class="form-label">Diversity Level</label>
+                                    <select class="form-select" id="diversity" name="diversity">
+                                        {% for value, label in diversity_levels %}
+                                        <option value="{{ value }}" {% if value == "balanced" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-magic"></i>
+                                Get Recommendations
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations Results -->
+    {% if recommendations %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trophy"></i>
+                        Recommended Papers for You
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Recommendation Summary -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <h3 class="mb-1">{{ recommendations.papers|length }}</h3>
+                                <small>Papers Found</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h3 class="mb-1">{{ recommendations.avg_relevance_score|floatformat:2 }}</h3>
+                                <small>Avg. Relevance</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h3 class="mb-1">{{ recommendations.diversity_score|floatformat:2 }}</h3>
+                                <small>Diversity Score</small>
+                            </div>
+                            <div class="col-md-3">
+                                <h3 class="mb-1">{{ recommendations.freshness_score|floatformat:2 }}</h3>
+                                <small>Freshness Score</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Papers -->
+                    {% for paper in recommendations.papers %}
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-primary me-2">Rank #{{ forloop.counter }}</span>
+                                {% if paper.category %}
+                                <span class="badge bg-secondary me-2">{{ paper.category }}</span>
+                                {% endif %}
+                                {% if paper.venue %}
+                                <span class="badge bg-info me-2">{{ paper.venue }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <!-- Relevance Score -->
+                                <div class="me-3">
+                                    <small class="text-muted">Relevance</small>
+                                    <div class="progress" style="width: 80px; height: 15px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ paper.relevance_score|floatformat:0|add:"%" }}"
+                                             title="Relevance: {{ paper.relevance_score|floatformat:2 }}">
+                                        </div>
+                                    </div>
+                                    <small>{{ paper.relevance_score|floatformat:2 }}</small>
+                                </div>
+                                
+                                <!-- Citation Count -->
+                                {% if paper.citation_count %}
+                                <div class="text-center">
+                                    <div class="fw-bold text-primary">{{ paper.citation_count }}</div>
+                                    <small class="text-muted">citations</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {% if paper.url %}
+                                <a href="{{ paper.url }}" target="_blank" class="text-decoration-none">
+                                    {{ paper.title }}
+                                    <i class="fas fa-external-link-alt ms-1 small"></i>
+                                </a>
+                                {% else %}
+                                {{ paper.title }}
+                                {% endif %}
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <strong class="text-muted">Authors:</strong>
+                                {% for author in paper.authors %}
+                                <span class="badge bg-light text-dark me-1">{{ author }}</span>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if paper.abstract %}
+                            <p class="card-text text-muted">
+                                {{ paper.abstract|truncatechars:300 }}
+                            </p>
+                            {% endif %}
+                            
+                            <!-- Paper Details -->
+                            <div class="row mt-3">
+                                {% if paper.year %}
+                                <div class="col-md-2">
+                                    <small class="text-muted">Year:</small>
+                                    <div class="fw-bold">{{ paper.year }}</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if paper.journal %}
+                                <div class="col-md-3">
+                                    <small class="text-muted">Journal:</small>
+                                    <div class="fw-bold">{{ paper.journal }}</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if paper.impact_factor %}
+                                <div class="col-md-2">
+                                    <small class="text-muted">Impact Factor:</small>
+                                    <div class="fw-bold">{{ paper.impact_factor|floatformat:2 }}</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if paper.open_access %}
+                                <div class="col-md-2">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-unlock"></i> Open Access
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Recommendation Reasons -->
+                            {% if paper.recommendation_reasons %}
+                            <div class="mt-3">
+                                <small class="text-muted fw-bold">Why recommended:</small>
+                                <ul class="list-unstyled mt-2">
+                                    {% for reason in paper.recommendation_reasons %}
+                                    <li class="mb-1">
+                                        <i class="fas fa-arrow-right text-success me-2"></i>
+                                        {{ reason }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Keywords -->
+                            {% if paper.keywords %}
+                            <div class="mt-3">
+                                <small class="text-muted">Keywords:</small>
+                                <div class="mt-1">
+                                    {% for keyword in paper.keywords %}
+                                    <span class="badge bg-outline-primary me-1">{{ keyword }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-3">
+                                <div class="btn-group" role="group">
+                                    {% if paper.url %}
+                                    <a href="{{ paper.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View Paper
+                                    </a>
+                                    {% endif %}
+                                    
+                                    {% if paper.pdf_url %}
+                                    <a href="{{ paper.pdf_url }}" target="_blank" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-file-pdf"></i> Download PDF
+                                    </a>
+                                    {% endif %}
+                                    
+                                    <button class="btn btn-outline-warning btn-sm" onclick="savePaper('{{ paper.id }}')">
+                                        <i class="fas fa-bookmark"></i> Save
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-info btn-sm" onclick="citePaper('{{ paper.id }}')">
+                                        <i class="fas fa-quote-right"></i> Cite
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Load More Button -->
+                    {% if recommendations.has_more %}
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-primary btn-lg" onclick="loadMoreRecommendations()">
+                            <i class="fas fa-plus"></i>
+                            Load More Recommendations
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendation Insights -->
+    {% if recommendations.insights %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line"></i>
+                        Recommendation Insights
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Top Authors -->
+                        <div class="col-md-4">
+                            <h6 class="text-primary">
+                                <i class="fas fa-user-graduate"></i>
+                                Top Authors in Your Area
+                            </h6>
+                            <ul class="list-unstyled">
+                                {% for author in recommendations.insights.top_authors %}
+                                <li class="mb-2">
+                                    <span class="fw-bold">{{ author.name }}</span>
+                                    <small class="text-muted">({{ author.paper_count }} papers)</small>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Trending Topics -->
+                        <div class="col-md-4">
+                            <h6 class="text-success">
+                                <i class="fas fa-fire"></i>
+                                Trending Topics
+                            </h6>
+                            <div class="d-flex flex-wrap">
+                                {% for topic in recommendations.insights.trending_topics %}
+                                <span class="badge bg-success me-1 mb-1">{{ topic }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Recommended Venues -->
+                        <div class="col-md-4">
+                            <h6 class="text-warning">
+                                <i class="fas fa-building"></i>
+                                Top Venues
+                            </h6>
+                            <ul class="list-unstyled">
+                                {% for venue in recommendations.insights.top_venues %}
+                                <li class="mb-2">
+                                    <span class="fw-bold">{{ venue.name }}</span>
+                                    <small class="text-muted">({{ venue.impact_factor|floatformat:1 }})</small>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+
+<style>
+.badge.bg-outline-primary {
+    background-color: transparent !important;
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.card.border-primary {
+    border-left: 4px solid #007bff !important;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.btn-group .btn {
+    margin-right: 0;
+}
+</style>
+
+<script>
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const interests = document.getElementById('interests').value.trim();
+    
+    if (!interests) {
+        e.preventDefault();
+        alert('Please describe your research interests to get personalized recommendations.');
+    }
+});
+
+// Save paper function
+function savePaper(paperId) {
+    // Implementation for saving paper to user's collection
+    fetch('/api/v1/papers/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({paper_id: paperId})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Paper saved to your collection!');
+        } else {
+            alert('Error saving paper: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving paper');
+    });
+}
+
+// Cite paper function
+function citePaper(paperId) {
+    // Implementation for generating citation
+    fetch('/api/v1/papers/cite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({paper_id: paperId, format: 'apa'})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.citation) {
+            navigator.clipboard.writeText(data.citation).then(() => {
+                alert('Citation copied to clipboard!');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error generating citation');
+    });
+}
+
+// Load more recommendations
+function loadMoreRecommendations() {
+    // Implementation for loading additional recommendations
+    const currentCount = document.querySelectorAll('.card.border-primary').length;
+    
+    fetch('/api/v1/recommendations/more', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            offset: currentCount,
+            interests: document.getElementById('interests').value,
+            context: document.getElementById('context').value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.papers && data.papers.length > 0) {
+            // Append new papers to the list
+            // Implementation would go here
+            location.reload(); // Simple reload for now
+        } else {
+            alert('No more recommendations available.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading more recommendations');
+    });
+}
+
+// Animate progress bars
+window.addEventListener('load', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1s ease-in-out';
+            bar.style.width = width;
+        }, 100);
+    });
+});
+</script>
+{% endblock %}

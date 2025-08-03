@@ -1,0 +1,344 @@
+{% extends "core/base.html" %}
+
+{% block title %}Paper Analysis - Research Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-microscope text-primary"></i>
+                AI-Powered Paper Analysis
+            </h1>
+            <p class="lead text-muted">
+                Analyze research papers with advanced AI to extract key insights, contributions, and impact predictions.
+            </p>
+        </div>
+    </div>
+
+    <!-- Paper Input Form -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt"></i>
+                        Paper Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Paper Title *</label>
+                                    <input type="text" class="form-control" id="title" name="title" 
+                                           placeholder="Enter the paper title" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="publication_date" class="form-label">Publication Date</label>
+                                    <input type="date" class="form-control" id="publication_date" name="publication_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="authors" class="form-label">Authors</label>
+                                    <input type="text" class="form-control" id="authors" name="authors" 
+                                           placeholder="Author 1, Author 2, Author 3">
+                                    <div class="form-text">Separate multiple authors with commas</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="journal" class="form-label">Journal/Conference</label>
+                                    <input type="text" class="form-control" id="journal" name="journal" 
+                                           placeholder="Journal or conference name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="abstract" class="form-label">Abstract *</label>
+                            <textarea class="form-control" id="abstract" name="abstract" rows="8" 
+                                      placeholder="Paste the paper abstract here..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">Keywords</label>
+                            <input type="text" class="form-control" id="keywords" name="keywords" 
+                                   placeholder="keyword1, keyword2, keyword3">
+                            <div class="form-text">Separate keywords with commas</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-cogs"></i>
+                                Analyze Paper
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Results -->
+    {% if analysis_results %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i>
+                        Analysis Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Summary -->
+                    {% if analysis_results.summary %}
+                    <div class="mb-4">
+                        <h6 class="text-primary">
+                            <i class="fas fa-file-text"></i>
+                            AI-Generated Summary
+                        </h6>
+                        <div class="alert alert-light border">
+                            {{ analysis_results.summary }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <!-- Key Contributions -->
+                        <div class="col-md-6">
+                            {% if analysis_results.key_contributions %}
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Key Contributions
+                                </h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for contribution in analysis_results.key_contributions %}
+                                    <li class="list-group-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        {{ contribution }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            <!-- Keywords -->
+                            {% if analysis_results.keywords %}
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-tags"></i>
+                                    Extracted Keywords
+                                </h6>
+                                <div>
+                                    {% for keyword in analysis_results.keywords %}
+                                    <span class="badge bg-secondary me-1 mb-1">{{ keyword }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Scores and Metrics -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-analytics"></i>
+                                    AI Analysis Scores
+                                </h6>
+                                
+                                <!-- Novelty Score -->
+                                {% if analysis_results.novelty_score %}
+                                <div class="mb-3">
+                                    <label class="form-label">Novelty Score</label>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" role="progressbar" 
+                                             style="width: {{ analysis_results.novelty_score|floatformat:0|add:"%" }}"
+                                             aria-valuenow="{{ analysis_results.novelty_score|floatformat:0 }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            {{ analysis_results.novelty_score|floatformat:2 }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Impact Prediction -->
+                                {% if analysis_results.impact_prediction %}
+                                <div class="mb-3">
+                                    <label class="form-label">Predicted Impact Score</label>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                             style="width: {{ analysis_results.impact_prediction.predicted_impact_score|floatformat:0|add:"%" }}"
+                                             aria-valuenow="{{ analysis_results.impact_prediction.predicted_impact_score|floatformat:0 }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            {{ analysis_results.impact_prediction.predicted_impact_score|floatformat:2 }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Technical Depth -->
+                                {% if analysis_results.technical_depth %}
+                                <div class="mb-3">
+                                    <label class="form-label">Technical Depth</label>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-danger" role="progressbar" 
+                                             style="width: {{ analysis_results.technical_depth|floatformat:0|add:"%" }}"
+                                             aria-valuenow="{{ analysis_results.technical_depth|floatformat:0 }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            {{ analysis_results.technical_depth|floatformat:2 }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Research Fields -->
+                            {% if analysis_results.research_fields %}
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-sitemap"></i>
+                                    Research Fields
+                                </h6>
+                                {% for field in analysis_results.research_fields %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>{{ field.field }}</span>
+                                    <span class="badge bg-primary">{{ field.confidence|floatformat:2 }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Methodology and Results -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if analysis_results.methodology %}
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-cogs"></i>
+                                    Methodology
+                                </h6>
+                                <div class="alert alert-light border">
+                                    {{ analysis_results.methodology }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            {% if analysis_results.results %}
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-chart-bar"></i>
+                                    Results
+                                </h6>
+                                <div class="alert alert-light border">
+                                    {{ analysis_results.results }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Readability -->
+                    {% if analysis_results.readability_score %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-book-open"></i>
+                                    Readability Analysis
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <div class="h4 text-info">{{ analysis_results.readability_score.flesch_score|floatformat:1 }}</div>
+                                            <small class="text-muted">Flesch Score</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <div class="h4 text-success">{{ analysis_results.readability_score.reading_level }}</div>
+                                            <small class="text-muted">Reading Level</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <div class="h4 text-warning">{{ analysis_results.readability_score.avg_sentence_length|floatformat:1 }}</div>
+                                            <small class="text-muted">Avg Sentence Length</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <div class="h4 text-primary">{{ analysis_results.readability_score.total_words }}</div>
+                                            <small class="text-muted">Total Words</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Impact Factors -->
+                    {% if analysis_results.impact_prediction.contributing_factors %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-4">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-star"></i>
+                                    Impact Contributing Factors
+                                </h6>
+                                <div class="row">
+                                    {% for factor in analysis_results.impact_prediction.contributing_factors %}
+                                    <div class="col-md-4 mb-2">
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i>
+                                            {{ factor }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Auto-resize textarea
+document.getElementById('abstract').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const abstract = document.getElementById('abstract').value.trim();
+    
+    if (!title || !abstract) {
+        e.preventDefault();
+        alert('Please provide both title and abstract for analysis.');
+    }
+});
+</script>
+{% endblock %}

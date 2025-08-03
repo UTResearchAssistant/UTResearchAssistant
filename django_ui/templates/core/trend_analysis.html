@@ -1,0 +1,324 @@
+{% extends "core/base.html" %}
+
+{% block title %}Research Trend Analysis - Research Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-chart-line text-primary"></i>
+                Research Trend Analysis
+            </h1>
+            <p class="lead text-muted">
+                Analyze emerging trends, publication patterns, and hot topics in any research field.
+            </p>
+        </div>
+    </div>
+
+    <!-- Trend Analysis Form -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search"></i>
+                        Field Analysis Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="field" class="form-label">Research Field *</label>
+                                    <input type="text" class="form-control" id="field" name="field" 
+                                           placeholder="e.g., Machine Learning, Climate Science"
+                                           list="popular-fields" required>
+                                    <datalist id="popular-fields">
+                                        {% for field in popular_fields %}
+                                        <option value="{{ field }}">
+                                        {% endfor %}
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="time_range" class="form-label">Time Range</label>
+                                    <select class="form-select" id="time_range" name="time_range">
+                                        {% for value, label in time_ranges %}
+                                        <option value="{{ value }}" {% if value == "5_years" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-chart-line"></i>
+                                Analyze Trends
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend Results -->
+    {% if trend_results %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar"></i>
+                        Trend Analysis Results for "{{ trend_results.field|default:"Unknown Field" }}"
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Overview Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <h3 class="text-info">{{ trend_results.total_papers|default:0 }}</h3>
+                                    <p class="mb-0">Total Papers</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-warning">
+                                <div class="card-body text-center">
+                                    <h3 class="text-warning">{{ trend_results.year_range|default:"N/A" }}</h3>
+                                    <p class="mb-0">Year Range</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h3 class="text-success">{{ trend_results.most_productive_year|default:"N/A" }}</h3>
+                                    <p class="mb-0">Peak Year</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-danger">
+                                <div class="card-body text-center">
+                                    <h3 class="text-danger">{{ trend_results.trending_keywords|length|default:0 }}</h3>
+                                    <p class="mb-0">Key Terms</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publication Growth Chart -->
+                    {% if trend_results.publication_growth %}
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-chart-area"></i>
+                                Publication Growth Over Time
+                            </h6>
+                            <div class="card border">
+                                <div class="card-body">
+                                    <canvas id="growthChart" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <!-- Trending Keywords -->
+                        {% if trend_results.trending_keywords %}
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-fire"></i>
+                                Trending Keywords
+                            </h6>
+                            <div class="card border">
+                                <div class="card-body">
+                                    {% for keyword in trend_results.trending_keywords|slice:":15" %}
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold">{{ keyword.keyword }}</span>
+                                        <div>
+                                            <span class="badge bg-primary">{{ keyword.frequency }}</span>
+                                            <div class="progress mt-1" style="width: 100px; height: 8px;">
+                                                <div class="progress-bar bg-info" 
+                                                     style="width: {% widthratio keyword.frequency trend_results.trending_keywords.0.frequency 100 %}%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Keyword Cloud Visualization -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-cloud"></i>
+                                Keyword Cloud
+                            </h6>
+                            <div class="card border">
+                                <div class="card-body text-center">
+                                    <div id="keyword-cloud" style="min-height: 300px;">
+                                        {% if trend_results.trending_keywords %}
+                                        {% for keyword in trend_results.trending_keywords|slice:":20" %}
+                                        <span class="badge m-1" 
+                                              style="font-size: {% widthratio keyword.frequency trend_results.trending_keywords.0.frequency 200 %}%; 
+                                                     background-color: hsl({% cycle "210" "270" "330" "30" "90" "150" %}, 70%, 60%);">
+                                            {{ keyword.keyword }}
+                                        </span>
+                                        {% endfor %}
+                                        {% else %}
+                                        <p class="text-muted">No trending keywords found</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publication Growth Details -->
+                    {% if trend_results.publication_growth %}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-table"></i>
+                                Publication Statistics by Year
+                            </h6>
+                            <div class="card border">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Year</th>
+                                                    <th>Paper Count</th>
+                                                    <th>Growth</th>
+                                                    <th>Visualization</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for year_data in trend_results.publication_growth %}
+                                                <tr>
+                                                    <td class="fw-bold">{{ year_data.year }}</td>
+                                                    <td>{{ year_data.paper_count }}</td>
+                                                    <td>
+                                                        {% if not forloop.first %}
+                                                        {% with prev_count=trend_results.publication_growth|slice:forloop.counter0|slice:"-1"|first.paper_count %}
+                                                        {% if year_data.paper_count > prev_count %}
+                                                        <span class="text-success">
+                                                            <i class="fas fa-arrow-up"></i>
+                                                            +{{ year_data.paper_count|sub:prev_count }}
+                                                        </span>
+                                                        {% elif year_data.paper_count < prev_count %}
+                                                        <span class="text-danger">
+                                                            <i class="fas fa-arrow-down"></i>
+                                                            {{ year_data.paper_count|sub:prev_count }}
+                                                        </span>
+                                                        {% else %}
+                                                        <span class="text-muted">
+                                                            <i class="fas fa-equals"></i>
+                                                            No change
+                                                        </span>
+                                                        {% endif %}
+                                                        {% endwith %}
+                                                        {% else %}
+                                                        <span class="text-muted">-</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <div class="progress" style="height: 20px;">
+                                                            <div class="progress-bar bg-info" 
+                                                                 style="width: {% widthratio year_data.paper_count trend_results.publication_growth|dictsort:'paper_count'|last.paper_count 100 %}%">
+                                                                {{ year_data.paper_count }}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Chart.js for Publication Growth -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+{% if trend_results.publication_growth %}
+// Publication Growth Chart
+const ctx = document.getElementById('growthChart').getContext('2d');
+const growthChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for year_data in trend_results.publication_growth %}'{{ year_data.year }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Papers Published',
+            data: [{% for year_data in trend_results.publication_growth %}{{ year_data.paper_count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Publication Trends Over Time'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Papers'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Year'
+                }
+            }
+        }
+    }
+});
+{% endif %}
+
+// Auto-complete for research fields
+document.getElementById('field').addEventListener('input', function() {
+    // Simple auto-complete logic could be added here
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const field = document.getElementById('field').value.trim();
+    
+    if (!field) {
+        e.preventDefault();
+        alert('Please provide a research field to analyze.');
+    }
+});
+</script>
+{% endblock %}

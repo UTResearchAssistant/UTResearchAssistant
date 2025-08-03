@@ -1,0 +1,339 @@
+{% extends "core/base.html" %}
+
+{% block title %}Research Gap Analysis - Research Assistant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-search-plus text-primary"></i>
+                Research Gap Analysis
+            </h1>
+            <p class="lead text-muted">
+                Identify unexplored areas, methodological gaps, and promising research opportunities in any field.
+            </p>
+        </div>
+    </div>
+
+    <!-- Gap Analysis Form -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-microscope"></i>
+                        Gap Analysis Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="field" class="form-label">Research Field *</label>
+                                    <input type="text" class="form-control" id="field" name="field" 
+                                           placeholder="e.g., Computer Vision, Biomedical Engineering"
+                                           list="popular-fields" required>
+                                    <datalist id="popular-fields">
+                                        {% for field in popular_fields %}
+                                        <option value="{{ field }}">
+                                        {% endfor %}
+                                    </datalist>
+                                    <div class="form-text">Enter a specific research field or subdomain</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="depth" class="form-label">Analysis Depth</label>
+                                    <select class="form-select" id="depth" name="depth">
+                                        {% for value, label in analysis_depths %}
+                                        <option value="{{ value }}" {% if value == "comprehensive" %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search-plus"></i>
+                                Find Research Gaps
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gap Analysis Results -->
+    {% if gap_results %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb"></i>
+                        Research Gaps Found in "{{ gap_results.field }}"
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Overview -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <h3 class="mb-1">{{ gap_results.gap_count }}</h3>
+                                <small>Total Gaps Identified</small>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="mb-1">{{ gap_results.gaps|selectattr:"type"|list|unique|length|default:0 }}</h3>
+                                <small>Gap Categories</small>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="mb-1">High</h3>
+                                <small>Priority Level</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gap Categories Overview -->
+                    {% if gap_results.gaps %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-chart-pie"></i>
+                                Gap Categories Distribution
+                            </h6>
+                            <div class="row">
+                                {% with gap_types=gap_results.gaps|regroup:"type" %}
+                                {% for gap_type in gap_types %}
+                                <div class="col-md-2 mb-3">
+                                    <div class="card border-primary">
+                                        <div class="card-body text-center p-2">
+                                            <h6 class="card-title text-primary">{{ gap_type.grouper|title }}</h6>
+                                            <h4 class="text-info">{{ gap_type.list|length }}</h4>
+                                            <small class="text-muted">gaps</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Gaps -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-list"></i>
+                                Identified Research Gaps
+                            </h6>
+                            
+                            {% for gap in gap_results.gaps %}
+                            <div class="card mb-4 border-left-{{ gap.type|slice:":1"|upper }}">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-{{ gap.type }} me-2">
+                                            {% if gap.type == "methodology" %}
+                                            <i class="fas fa-cogs"></i> Methodology
+                                            {% elif gap.type == "application" %}
+                                            <i class="fas fa-rocket"></i> Application
+                                            {% elif gap.type == "temporal" %}
+                                            <i class="fas fa-clock"></i> Temporal
+                                            {% else %}
+                                            <i class="fas fa-question"></i> {{ gap.type|title }}
+                                            {% endif %}
+                                        </span>
+                                        <strong>Gap #{{ forloop.counter }}</strong>
+                                    </div>
+                                    <div>
+                                        {% if gap.importance_score %}
+                                        <div class="progress" style="width: 100px; height: 20px;">
+                                            <div class="progress-bar 
+                                                        {% if gap.importance_score > 0.8 %}bg-danger{% elif gap.importance_score > 0.6 %}bg-warning{% else %}bg-info{% endif %}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ gap.importance_score|floatformat:0|add:"%" }}"
+                                                 title="Importance: {{ gap.importance_score|floatformat:2 }}">
+                                                {{ gap.importance_score|floatformat:1 }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-dark">{{ gap.gap_description }}</h6>
+                                    
+                                    {% if gap.evidence %}
+                                    <div class="mb-3">
+                                        <small class="text-muted fw-bold">Evidence:</small>
+                                        <p class="text-muted mb-2">{{ gap.evidence }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if gap.research_directions %}
+                                    <div class="mb-3">
+                                        <small class="text-muted fw-bold">Suggested Research Directions:</small>
+                                        <ul class="list-unstyled mt-2">
+                                            {% for direction in gap.research_directions %}
+                                            <li class="mb-1">
+                                                <i class="fas fa-arrow-right text-primary me-2"></i>
+                                                {{ direction }}
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Gap-specific details -->
+                                    <div class="row mt-3">
+                                        {% if gap.method %}
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Method:</small>
+                                            <div class="fw-bold">{{ gap.method }}</div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if gap.domain %}
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Domain:</small>
+                                            <div class="fw-bold">{{ gap.domain }}</div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if gap.year %}
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Period:</small>
+                                            <div class="fw-bold">{{ gap.year }}</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if gap.coverage_percentage %}
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Coverage:</small>
+                                            <div class="fw-bold">{{ gap.coverage_percentage|floatformat:1 }}%</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if gap.paper_count %}
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Papers Found:</small>
+                                            <div class="fw-bold">{{ gap.paper_count }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Research Opportunities Summary -->
+                    {% if gap_results.gaps %}
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-rocket"></i>
+                                        Research Opportunities Summary
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- High Priority Gaps -->
+                                        <div class="col-md-6">
+                                            <h6 class="text-danger">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                High Priority Gaps
+                                            </h6>
+                                            <ul class="list-unstyled">
+                                                {% for gap in gap_results.gaps %}
+                                                {% if gap.importance_score > 0.7 %}
+                                                <li class="mb-2">
+                                                    <span class="badge bg-danger me-2">{{ gap.type|slice:":3"|upper }}</span>
+                                                    {{ gap.gap_description|truncatechars:80 }}
+                                                </li>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <!-- Quick Wins -->
+                                        <div class="col-md-6">
+                                            <h6 class="text-success">
+                                                <i class="fas fa-trophy"></i>
+                                                Quick Win Opportunities
+                                            </h6>
+                                            <ul class="list-unstyled">
+                                                {% for gap in gap_results.gaps %}
+                                                {% if gap.type == "application" %}
+                                                <li class="mb-2">
+                                                    <span class="badge bg-success me-2">APP</span>
+                                                    {{ gap.gap_description|truncatechars:80 }}
+                                                </li>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.badge-methodology { background-color: #007bff; }
+.badge-application { background-color: #28a745; }
+.badge-temporal { background-color: #ffc107; color: #212529; }
+.badge-geographical { background-color: #dc3545; }
+.badge-interdisciplinary { background-color: #6f42c1; }
+
+.card.border-left-m::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #007bff; }
+.card.border-left-a::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #28a745; }
+.card.border-left-t::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #ffc107; }
+.card.border-left-g::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #dc3545; }
+.card.border-left-i::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #6f42c1; }
+</style>
+
+<script>
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const field = document.getElementById('field').value.trim();
+    
+    if (!field) {
+        e.preventDefault();
+        alert('Please provide a research field to analyze for gaps.');
+    }
+});
+
+// Auto-complete for research fields
+document.getElementById('field').addEventListener('input', function() {
+    // Could add more sophisticated auto-complete logic here
+});
+
+// Animate progress bars
+window.addEventListener('load', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1s ease-in-out';
+            bar.style.width = width;
+        }, 100);
+    });
+});
+</script>
+{% endblock %}
