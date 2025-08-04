@@ -728,3 +728,10 @@ def training_metrics_api(request, job_id):
     }
     
     return JsonResponse(data)
+
+
+@login_required
+def dataset_detail(request, dataset_id):
+    """Display detailed information about a specific dataset"""
+    dataset = get_object_or_404(DatasetProfile, id=dataset_id)
+    return render(request, 'training_config/dataset_detail.html', {'dataset': dataset})

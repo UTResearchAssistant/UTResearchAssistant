@@ -1,58 +1,72 @@
-{% extends "core/base.html" %}
-
-{% block title %}Compare Training Configurations{% endblock %}
-
-{% block content %}
+{% extends "core/base.html" %} {% block title %}Compare Training
+Configurations{% endblock %} {% block content %}
 <div class="container mt-5">
-    <h1>Compare Training Configurations</h1>
-    <p class="lead">Select two or more configurations to compare their estimations and performance.</p>
+  <h1>Compare Training Configurations</h1>
+  <p class="lead">
+    Select two or more configurations to compare their estimations and
+    performance.
+  </p>
 
-    <form method="post">
-        {% csrf_token %}
-        <div class="card">
-            <div class="card-body">
-                {% if configurations %}
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Name</th>
-                                <th>Base Model</th>
-                                <th>Dataset</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for config in configurations %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="configurations" value="{{ config.id }}">
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'training_config:configuration_detail' config.id %}">
-                                            {{ config.name }}
-                                        </a>
-                                    </td>
-                                    <td>{{ config.base_model.name }}</td>
-                                    <td>{{ config.dataset.name }}</td>
-                                    <td><span class="badge bg-info">{{ config.get_status_display }}</span></td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-primary mt-3">
-                        <i class="fas fa-balance-scale me-2"></i>Compare Selected
-                    </button>
-                {% else %}
-                    <div class="text-center py-5">
-                        <p class="lead">No training configurations available to compare.</p>
-                        <a href="{% url 'training_config:configuration_builder' %}" class="btn btn-primary mt-3">
-                            <i class="fas fa-plus me-2"></i>Create a Configuration
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-body">
+        {% if configurations %}
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Name</th>
+              <th>Base Model</th>
+              <th>Dataset</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for config in configurations %}
+            <tr>
+              <td>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="configurations"
+                  value="{{ config.id }}"
+                />
+              </td>
+              <td>
+                <a
+                  href="{% url 'training_config:configuration_detail' config.id %}"
+                >
+                  {{ config.name }}
+                </a>
+              </td>
+              <td>{{ config.base_model.name }}</td>
+              <td>{{ config.dataset.name }}</td>
+              <td>
+                <span class="badge bg-info"
+                  >{{ config.get_status_display }}</span
+                >
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary mt-3">
+          <i class="fas fa-balance-scale me-2"></i>Compare Selected
+        </button>
+        {% else %}
+        <div class="text-center py-5">
+          <p class="lead">No training configurations available to compare.</p>
+          <a
+            href="{% url 'training_config:configuration_builder' %}"
+            class="btn btn-primary mt-3"
+          >
+            <i class="fas fa-plus me-2"></i>Create a Configuration
+          </a>
         </div>
-    </form>
+        {% endif %}
+      </div>
+    </div>
+  </form>
 </div>
 {% endblock %}

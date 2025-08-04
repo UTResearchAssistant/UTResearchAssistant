@@ -1,0 +1,191 @@
+{% extends "core/base.html" %} {% block title %}{{ dataset.name }} - Dataset
+Details{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">{{ dataset.name }}</h2>
+        <span class="badge bg-light text-dark"
+          >{{ dataset.get_dataset_type_display }}</span
+        >
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="text-muted">
+        {{ dataset.description|default:"No description available for this
+        dataset." }}
+      </p>
+
+      <div class="row">
+        <!-- Left Column: Dataset Characteristics -->
+        <div class="col-md-6">
+          <h4>Dataset Characteristics</h4>
+          <ul class="list-group mb-4">
+            <li class="list-group-item">
+              <strong>Type:</strong> {{ dataset.get_dataset_type_display }}
+            </li>
+            <li class="list-group-item">
+              <strong>Examples:</strong> {{ dataset.num_examples|floatformat:0
+              }}
+            </li>
+            <li class="list-group-item">
+              <strong>Total Tokens:</strong> {{
+              dataset.total_tokens|floatformat:0 }}
+            </li>
+            <li class="list-group-item">
+              <strong>Avg Tokens/Example:</strong> {{
+              dataset.avg_tokens_per_example }}
+            </li>
+            <li class="list-group-item">
+              <strong>Size:</strong> {{ dataset.size_gb|floatformat:2 }} GB
+            </li>
+          </ul>
+
+          <h4>HuggingFace Integration</h4>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Dataset Name:</strong> {{
+              dataset.hf_dataset_name|default:"Not specified" }}
+            </li>
+            <li class="list-group-item">
+              <strong>Config:</strong> {{
+              dataset.hf_config_name|default:"Default" }}
+            </li>
+            <li class="list-group-item">
+              <strong>Split:</strong> {{ dataset.hf_split }}
+            </li>
+            <li class="list-group-item">
+              <strong>Requires Auth:</strong> {{
+              dataset.hf_requires_auth|yesno:"Yes,No" }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right Column: AI Analysis -->
+        <div class="col-md-6">
+          <h4>AI-Powered Analysis</h4>
+          <div id="explanation-container" class="mt-3">
+            <div class="card">
+              <div class="card-body">
+                <div id="explanation-content">
+                  {% if dataset.explanation %}
+                  <div class="markdown-content">
+                    {{ dataset.explanation.explanation_text|safe }}
+                  </div>
+                  <small class="text-muted">
+                    Generated on {{ dataset.explanation.created_at|date:"Y-m-d
+                    H:i" }}
+                  </small>
+                  {% else %}
+                  <p class="text-muted">No AI analysis generated yet.</p>
+                  {% endif %}
+                </div>
+                <button
+                  id="generate-explanation-btn"
+                  class="btn btn-success mt-3"
+                  data-dataset-id="{{ dataset.id }}"
+                >
+                  <i class="fas fa-magic me-2"></i>Generate AI Analysis
+                </button>
+                <div
+                  id="explanation-spinner"
+                  class="spinner-border text-success ms-3"
+                  role="status"
+                  style="display: none"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preprocessing Information -->
+      {% if dataset.preprocessing_notes %}
+      <div class="row mt-4">
+        <div class="col-12">
+          <h4>Preprocessing Notes</h4>
+          <div class="alert alert-info">{{ dataset.preprocessing_notes }}</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="card-footer text-muted">
+      Created on {{ dataset.created_at }} • {% if dataset.requires_tokenization
+      %}Requires tokenization{% endif %} {% if dataset.requires_truncation %}•
+      Requires truncation{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const generateBtn = document.getElementById("generate-explanation-btn");
+    const explanationContent = document.getElementById("explanation-content");
+    const spinner = document.getElementById("explanation-spinner");
+
+    generateBtn.addEventListener("click", function () {
+      const datasetId = this.dataset.datasetId;
+
+      spinner.style.display = "inline-block";
+      generateBtn.disabled = true;
+      explanationContent.innerHTML =
+        "<p>Generating AI analysis, please wait...</p>";
+
+      fetch("{% url 'self_explanation:generate_dataset_explanation' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({
+          dataset_profile_id: datasetId,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            explanationContent.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+          } else {
+            explanationContent.innerHTML = `
+                    <div class="markdown-content">
+                        ${data.explanation_text.replace(/\n/g, "<br>")}
+                    </div>
+                    <small class="text-muted">
+                        Generated just now
+                    </small>
+                `;
+          }
+        })
+        .catch((error) => {
+          explanationContent.innerHTML = `<div class="alert alert-danger">An unexpected error occurred: ${error}</div>`;
+        })
+        .finally(() => {
+          spinner.style.display = "none";
+          generateBtn.disabled = false;
+        });
+    });
+  });
+</script>
+
+<style>
+  .markdown-content {
+    line-height: 1.6;
+  }
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3 {
+    color: #333;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .markdown-content ul,
+  .markdown-content ol {
+    margin-left: 1.5rem;
+  }
+  .markdown-content strong {
+    font-weight: 600;
+  }
+</style>
+{% endblock %}

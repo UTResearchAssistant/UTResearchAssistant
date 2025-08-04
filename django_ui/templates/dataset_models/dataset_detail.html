@@ -1,0 +1,525 @@
+{% extends "core/base.html" %} {% block title %}{{ dataset.name }} - Dataset
+Details{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Main Dataset Information -->
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ dataset.name }}</h2>
+            <span class="badge bg-light text-dark"
+              >{{ dataset.get_dataset_type_display }}</span
+            >
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="lead text-muted">{{ dataset.description }}</p>
+
+          <!-- Dataset Characteristics -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>
+                <i class="fas fa-info-circle me-2"></i>Dataset Information
+              </h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Type:</strong>
+                  <span class="badge bg-secondary"
+                    >{{ dataset.get_dataset_type_display }}</span
+                  >
+                </li>
+                {% if dataset.size_mb %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Size:</strong>
+                  <span>{{ dataset.size_mb|floatformat:2 }} MB</span>
+                </li>
+                {% endif %} {% if dataset.num_samples %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Samples:</strong>
+                  <span>{{ dataset.num_samples|floatformat:0 }}</span>
+                </li>
+                {% endif %} {% if dataset.num_classes %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Classes:</strong>
+                  <span>{{ dataset.num_classes }}</span>
+                </li>
+                {% endif %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>License:</strong>
+                  <span class="badge bg-info"
+                    >{{ dataset.get_license_type_display }}</span
+                  >
+                </li>
+                {% if dataset.publication_year %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Year:</strong>
+                  <span>{{ dataset.publication_year }}</span>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            <div class="col-md-6">
+              <h5><i class="fas fa-chart-bar me-2"></i>Metrics</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Downloads:</strong>
+                  <span class="badge bg-success"
+                    >{{ dataset.download_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Citations:</strong>
+                  <span class="badge bg-warning"
+                    >{{ dataset.citation_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Stars:</strong>
+                  <span class="badge bg-primary"
+                    >{{ dataset.star_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Created:</strong>
+                  <span>{{ dataset.created_at|date:"M d, Y" }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Research Fields -->
+          {% if dataset.research_fields.all %}
+          <div class="mb-4">
+            <h5><i class="fas fa-tags me-2"></i>Research Fields</h5>
+            {% for field in dataset.research_fields.all %}
+            <span class="badge bg-primary me-2 mb-2">{{ field.name }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Tags and Keywords -->
+          <div class="row mb-4">
+            {% if dataset.tags_list %}
+            <div class="col-md-6">
+              <h6><i class="fas fa-tag me-2"></i>Tags</h6>
+              {% for tag in dataset.tags_list %}
+              <span class="badge bg-secondary me-1 mb-1">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %} {% if dataset.keywords_list %}
+            <div class="col-md-6">
+              <h6><i class="fas fa-key me-2"></i>Keywords</h6>
+              {% for keyword in dataset.keywords_list %}
+              <span class="badge bg-info me-1 mb-1">{{ keyword }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Authors -->
+          {% if dataset.authors_list %}
+          <div class="mb-4">
+            <h5><i class="fas fa-users me-2"></i>Authors</h5>
+            <div class="d-flex flex-wrap">
+              {% for author in dataset.authors_list %}
+              <span class="badge bg-dark me-2 mb-2">{{ author }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Links -->
+          <div class="row">
+            {% if dataset.source_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ dataset.source_url }}"
+                target="_blank"
+                class="btn btn-outline-primary w-100"
+              >
+                <i class="fas fa-globe me-2"></i>Source
+              </a>
+            </div>
+            {% endif %} {% if dataset.download_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ dataset.download_url }}"
+                target="_blank"
+                class="btn btn-success w-100"
+              >
+                <i class="fas fa-download me-2"></i>Download
+              </a>
+            </div>
+            {% endif %} {% if dataset.paper_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ dataset.paper_url }}"
+                target="_blank"
+                class="btn btn-outline-info w-100"
+              >
+                <i class="fas fa-file-alt me-2"></i>Paper
+              </a>
+            </div>
+            {% endif %} {% if dataset.github_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ dataset.github_url }}"
+                target="_blank"
+                class="btn btn-outline-dark w-100"
+              >
+                <i class="fab fa-github me-2"></i>GitHub
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Models -->
+      {% if related_models %}
+      <div class="card mt-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-brain me-2"></i>Models Trained on This Dataset
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for model in related_models %}
+            <div class="col-md-6 mb-3">
+              <div class="card border-left-primary">
+                <div class="card-body py-3">
+                  <h6 class="card-title mb-1">
+                    <a
+                      href="{% url 'dataset_models:model_detail' model.id %}"
+                      class="text-decoration-none"
+                    >
+                      {{ model.name }}
+                    </a>
+                  </h6>
+                  <p class="card-text small text-muted">
+                    {{ model.description|truncatechars:100 }}
+                  </p>
+                  <span class="badge bg-primary"
+                    >{{ model.get_model_type_display }}</span
+                  >
+                  {% if model.accuracy %}
+                  <span class="badge bg-success"
+                    >{{ model.accuracy|floatformat:2 }}% accuracy</span
+                  >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- AI Analysis Section -->
+      <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">
+            <i class="fas fa-magic me-2"></i>AI-Powered Dataset Analysis
+          </h5>
+        </div>
+        <div class="card-body">
+          <div id="analysis-result" class="mb-3" style="display: none;">
+            <div class="alert alert-success">
+              <h6><i class="fas fa-lightbulb me-2"></i>Analysis Complete</h6>
+              <div id="analysis-content"></div>
+            </div>
+          </div>
+          
+          <div id="analysis-placeholder">
+            <p class="text-muted">
+              <i class="fas fa-info-circle me-2"></i>
+              Generate an AI-powered analysis of this dataset to get insights about:
+            </p>
+            <ul class="text-muted">
+              <li>Dataset characteristics and structure</li>
+              <li>Potential applications and use cases</li>
+              <li>Quality assessment and limitations</li>
+              <li>Bias detection and considerations</li>
+              <li>Best practices for usage</li>
+            </ul>
+          </div>
+          
+          <div id="analysis-loading" style="display: none;">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm text-warning me-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="text-muted">Generating AI analysis... This may take a few moments.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
+        </div>
+        <div class="card-body">
+          <!-- AI Analysis Feature Notice -->
+          <div class="alert alert-info small mb-3">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>AI Analysis:</strong> Get detailed insights, potential
+            biases, and recommendations using our AI-powered dataset analysis
+            tool.
+          </div>
+
+          <div class="d-grid gap-2">
+            {% if dataset.download_url %}
+            <a
+              href="{{ dataset.download_url }}"
+              target="_blank"
+              class="btn btn-primary"
+            >
+              <i class="fas fa-download me-2"></i>Download Dataset
+            </a>
+            {% endif %}
+
+            <!-- AI Analysis Feature -->
+            <button 
+              id="ai-analysis-btn"
+              class="btn btn-warning"
+              data-dataset-id="{{ dataset.id }}"
+              data-dataset-name="{{ dataset.name }}"
+            >
+              <i class="fas fa-magic me-2"></i>AI Dataset Analysis
+            </button>
+
+            <a
+              href="{% url 'dataset_models:dataset_search' %}"
+              class="btn btn-outline-secondary"
+            >
+              <i class="fas fa-search me-2"></i>Search More Datasets
+            </a>
+
+            <a
+              href="{% url 'dataset_models:model_search' %}"
+              class="btn btn-outline-info"
+            >
+              <i class="fas fa-brain me-2"></i>Find Related Models
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset Statistics -->
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Statistics</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <div class="row">
+              <div class="col-6 mb-3">
+                <h4 class="text-primary mb-0">
+                  {{ dataset.download_count|default:0 }}
+                </h4>
+                <small class="text-muted">Downloads</small>
+              </div>
+              <div class="col-6 mb-3">
+                <h4 class="text-success mb-0">
+                  {{ dataset.citation_count|default:0 }}
+                </h4>
+                <small class="text-muted">Citations</small>
+              </div>
+              <div class="col-6">
+                <h4 class="text-warning mb-0">
+                  {{ dataset.star_count|default:0 }}
+                </h4>
+                <small class="text-muted">Stars</small>
+              </div>
+              <div class="col-6">
+                <h4 class="text-info mb-0">{{ related_models|length }}</h4>
+                <small class="text-muted">Models</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Metadata -->
+      {% if dataset.metadata %}
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">
+            <i class="fas fa-info me-2"></i>Additional Information
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="bg-light p-3 rounded">
+            <small class="text-muted">
+              {% for key, value in dataset.metadata.items %}
+              <strong>{{ key }}:</strong> {{ value }}<br />
+              {% empty %} No additional metadata available. {% endfor %}
+            </small>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const aiAnalysisBtn = document.getElementById('ai-analysis-btn');
+    const analysisResult = document.getElementById('analysis-result');
+    const analysisContent = document.getElementById('analysis-content');
+    const analysisPlaceholder = document.getElementById('analysis-placeholder');
+    const analysisLoading = document.getElementById('analysis-loading');
+
+    aiAnalysisBtn.addEventListener('click', function() {
+        const datasetId = this.dataset.datasetId;
+        const datasetName = this.dataset.datasetName;
+        
+        // Show loading state
+        aiAnalysisBtn.disabled = true;
+        aiAnalysisBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+        analysisPlaceholder.style.display = 'none';
+        analysisLoading.style.display = 'block';
+        
+        // Create analysis prompt based on available dataset information
+        const analysisPrompt = `Please provide a comprehensive analysis of the dataset "${datasetName}" with the following information:
+
+Dataset Details:
+- Name: ${datasetName}
+- Type: {{ dataset.get_dataset_type_display }}
+- Size: {{ dataset.size_mb|default:"Unknown" }} MB
+- Samples: {{ dataset.num_samples|default:"Unknown" }}
+- Classes: {{ dataset.num_classes|default:"Unknown" }}
+- License: {{ dataset.get_license_type_display }}
+- Publication Year: {{ dataset.publication_year|default:"Unknown" }}
+- Description: {{ dataset.description|default:"No description available" }}
+- Research Fields: {% for field in dataset.research_fields.all %}{{ field.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+- Tags: {% for tag in dataset.tags_list %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}
+
+Please analyze:
+1. Dataset characteristics and structure
+2. Potential applications and use cases  
+3. Quality assessment and limitations
+4. Potential biases and ethical considerations
+5. Best practices for usage
+6. Recommendations for preprocessing or handling
+
+Provide a detailed, structured analysis that would be helpful for researchers and practitioners.`;
+
+        // Call AI analysis API
+        fetch('/datasets/api/generate-analysis/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                dataset_id: datasetId,
+                dataset_name: datasetName,
+                prompt: analysisPrompt
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display the analysis
+                analysisContent.innerHTML = formatAnalysisResponse(data.analysis);
+                analysisResult.style.display = 'block';
+                analysisLoading.style.display = 'none';
+                
+                // Reset button
+                aiAnalysisBtn.disabled = false;
+                aiAnalysisBtn.innerHTML = '<i class="fas fa-check me-2"></i>Analysis Complete';
+                aiAnalysisBtn.classList.remove('btn-warning');
+                aiAnalysisBtn.classList.add('btn-success');
+            } else {
+                throw new Error(data.error || 'Analysis failed');
+            }
+        })
+        .catch(error => {
+            console.error('Analysis error:', error);
+            analysisLoading.style.display = 'none';
+            analysisContent.innerHTML = `
+                <div class="alert alert-danger">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Analysis Failed</h6>
+                    <p class="mb-2">Unable to generate AI analysis at this time. This might be because:</p>
+                    <ul class="mb-2">
+                        <li>The AI analysis service is not yet fully configured</li>
+                        <li>This dataset is from the general dataset catalog and needs to be imported into the training system</li>
+                        <li>Network connectivity issues</li>
+                    </ul>
+                    <p class="mb-0">
+                        <strong>Alternative:</strong> Try accessing the 
+                        <a href="/training/datasets/" class="alert-link">Training Configuration datasets</a> 
+                        for full AI analysis features.
+                    </p>
+                </div>
+            `;
+            analysisResult.style.display = 'block';
+            
+            // Reset button
+            aiAnalysisBtn.disabled = false;
+            aiAnalysisBtn.innerHTML = '<i class="fas fa-magic me-2"></i>AI Dataset Analysis';
+        });
+    });
+
+    function formatAnalysisResponse(analysis) {
+        // Convert markdown-like formatting to HTML
+        return analysis
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>')
+            .replace(/^/, '<p>')
+            .replace(/$/, '</p>');
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %} 
+
+{% block extra_css %}
+<style>
+  .border-left-primary {
+    border-left: 3px solid #007bff !important;
+  }
+
+  .badge {
+    font-size: 0.75em;
+  }
+
+  .list-group-item {
+    border: none;
+    padding: 0.5rem 0;
+  }
+
+  .card-title a:hover {
+    text-decoration: underline !important;
+  }
+</style>
+{% endblock %}

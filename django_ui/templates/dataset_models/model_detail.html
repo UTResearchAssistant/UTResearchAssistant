@@ -1,0 +1,346 @@
+{% extends "core/base.html" %} {% block title %}{{ model.name }} - Model
+Details{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Main Model Information -->
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ model.name }}</h2>
+            <span class="badge bg-light text-dark"
+              >{{ model.get_model_type_display }}</span
+            >
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="lead text-muted">{{ model.description }}</p>
+
+          <!-- Model Characteristics -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5><i class="fas fa-brain me-2"></i>Model Information</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Type:</strong>
+                  <span class="badge bg-secondary"
+                    >{{ model.get_model_type_display }}</span
+                  >
+                </li>
+                {% if model.framework %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Framework:</strong>
+                  <span class="badge bg-primary"
+                    >{{ model.get_framework_display }}</span
+                  >
+                </li>
+                {% endif %} {% if model.architecture %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Architecture:</strong>
+                  <span>{{ model.architecture }}</span>
+                </li>
+                {% endif %} {% if model.model_size_mb %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Size:</strong>
+                  <span>{{ model.model_size_mb|floatformat:2 }} MB</span>
+                </li>
+                {% endif %} {% if model.parameters_count %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Parameters:</strong>
+                  <span>{{ model.parameters_count|floatformat:0 }}</span>
+                </li>
+                {% endif %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Pretrained:</strong>
+                  <span
+                    class="badge bg-{% if model.pretrained %}success{% else %}warning{% endif %}"
+                  >
+                    {% if model.pretrained %}Yes{% else %}No{% endif %}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-md-6">
+              <h5>
+                <i class="fas fa-chart-bar me-2"></i>Performance & Metrics
+              </h5>
+              <ul class="list-group list-group-flush">
+                {% if model.accuracy %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Accuracy:</strong>
+                  <span class="badge bg-success"
+                    >{{ model.accuracy|floatformat:2 }}%</span
+                  >
+                </li>
+                {% endif %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Downloads:</strong>
+                  <span class="badge bg-info"
+                    >{{ model.download_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Citations:</strong>
+                  <span class="badge bg-warning"
+                    >{{ model.citation_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Stars:</strong>
+                  <span class="badge bg-primary"
+                    >{{ model.star_count|default:0 }}</span
+                  >
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <strong>Created:</strong>
+                  <span>{{ model.created_at|date:"M d, Y" }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Research Fields -->
+          {% if model.research_fields.all %}
+          <div class="mb-4">
+            <h5><i class="fas fa-tags me-2"></i>Research Fields</h5>
+            {% for field in model.research_fields.all %}
+            <span class="badge bg-primary me-2 mb-2">{{ field.name }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Tags and Keywords -->
+          <div class="row mb-4">
+            {% if model.tags_list %}
+            <div class="col-md-6">
+              <h6><i class="fas fa-tag me-2"></i>Tags</h6>
+              {% for tag in model.tags_list %}
+              <span class="badge bg-secondary me-1 mb-1">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %} {% if model.keywords_list %}
+            <div class="col-md-6">
+              <h6><i class="fas fa-key me-2"></i>Keywords</h6>
+              {% for keyword in model.keywords_list %}
+              <span class="badge bg-info me-1 mb-1">{{ keyword }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Authors -->
+          {% if model.authors_list %}
+          <div class="mb-4">
+            <h5><i class="fas fa-users me-2"></i>Authors</h5>
+            <div class="d-flex flex-wrap">
+              {% for author in model.authors_list %}
+              <span class="badge bg-dark me-2 mb-2">{{ author }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Links -->
+          <div class="row">
+            {% if model.source_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ model.source_url }}"
+                target="_blank"
+                class="btn btn-outline-primary w-100"
+              >
+                <i class="fas fa-globe me-2"></i>Source
+              </a>
+            </div>
+            {% endif %} {% if model.download_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ model.download_url }}"
+                target="_blank"
+                class="btn btn-success w-100"
+              >
+                <i class="fas fa-download me-2"></i>Download
+              </a>
+            </div>
+            {% endif %} {% if model.paper_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ model.paper_url }}"
+                target="_blank"
+                class="btn btn-outline-info w-100"
+              >
+                <i class="fas fa-file-alt me-2"></i>Paper
+              </a>
+            </div>
+            {% endif %} {% if model.github_url %}
+            <div class="col-md-3 mb-3">
+              <a
+                href="{{ model.github_url }}"
+                target="_blank"
+                class="btn btn-outline-dark w-100"
+              >
+                <i class="fab fa-github me-2"></i>GitHub
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Training Datasets -->
+      {% if training_datasets %}
+      <div class="card mt-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-database me-2"></i>Training Datasets
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for dataset in training_datasets %}
+            <div class="col-md-6 mb-3">
+              <div class="card border-left-success">
+                <div class="card-body py-3">
+                  <h6 class="card-title mb-1">
+                    <a
+                      href="{% url 'dataset_models:dataset_detail' dataset.id %}"
+                      class="text-decoration-none"
+                    >
+                      {{ dataset.name }}
+                    </a>
+                  </h6>
+                  <p class="card-text small text-muted">
+                    {{ dataset.description|truncatechars:100 }}
+                  </p>
+                  <span class="badge bg-primary"
+                    >{{ dataset.get_dataset_type_display }}</span
+                  >
+                  {% if dataset.num_samples %}
+                  <span class="badge bg-info"
+                    >{{ dataset.num_samples|floatformat:0 }} samples</span
+                  >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            {% if model.download_url %}
+            <a
+              href="{{ model.download_url }}"
+              target="_blank"
+              class="btn btn-primary"
+            >
+              <i class="fas fa-download me-2"></i>Download Model
+            </a>
+            {% endif %}
+
+            <a
+              href="{% url 'dataset_models:model_search' %}"
+              class="btn btn-outline-secondary"
+            >
+              <i class="fas fa-search me-2"></i>Search More Models
+            </a>
+
+            <a
+              href="{% url 'dataset_models:dataset_search' %}"
+              class="btn btn-outline-info"
+            >
+              <i class="fas fa-database me-2"></i>Find Datasets
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Model Statistics -->
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Statistics</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <div class="row">
+              <div class="col-6 mb-3">
+                <h4 class="text-primary mb-0">
+                  {{ model.download_count|default:0 }}
+                </h4>
+                <small class="text-muted">Downloads</small>
+              </div>
+              <div class="col-6 mb-3">
+                <h4 class="text-success mb-0">
+                  {{ model.citation_count|default:0 }}
+                </h4>
+                <small class="text-muted">Citations</small>
+              </div>
+              <div class="col-6">
+                <h4 class="text-warning mb-0">
+                  {{ model.star_count|default:0 }}
+                </h4>
+                <small class="text-muted">Stars</small>
+              </div>
+              <div class="col-6">
+                <h4 class="text-info mb-0">{{ training_datasets|length }}</h4>
+                <small class="text-muted">Datasets</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Metadata -->
+      {% if model.metadata %}
+      <div class="card mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">
+            <i class="fas fa-info me-2"></i>Additional Information
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="bg-light p-3 rounded">
+            <small class="text-muted">
+              {% for key, value in model.metadata.items %}
+              <strong>{{ key }}:</strong> {{ value }}<br />
+              {% empty %} No additional metadata available. {% endfor %}
+            </small>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .border-left-success {
+    border-left: 3px solid #28a745 !important;
+  }
+
+  .badge {
+    font-size: 0.75em;
+  }
+
+  .list-group-item {
+    border: none;
+    padding: 0.5rem 0;
+  }
+
+  .card-title a:hover {
+    text-decoration: underline !important;
+  }
+</style>
+{% endblock %}

@@ -41,4 +41,5 @@ urlpatterns = [
     path('hardware/', views.hardware_profiles, name='hardware_profiles'),
     path('models/', views.model_profiles, name='model_profiles'),
     path('datasets/', views.dataset_profiles, name='dataset_profiles'),
+    path('datasets/<uuid:dataset_id>/', views.dataset_detail, name='dataset_detail'),
 ]
