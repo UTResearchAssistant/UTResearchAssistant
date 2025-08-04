@@ -1,0 +1,75 @@
+name: Notebook Testing and Validation
+
+on:
+  push:
+    paths:
+      - "notebook/**"
+      - "services/**"
+      - "agents/**"
+  pull_request:
+    paths:
+      - "notebook/**"
+      - "services/**"
+      - "agents/**"
+
+jobs:
+  test-notebooks:
+    name: Test Jupyter Notebooks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nbval pytest jupyter
+
+      - name: Test notebook execution
+        run: |
+          pytest --nbval notebook/code.ipynb --nbval-lax
+
+      - name: Validate notebook outputs
+        run: |
+          jupyter nbconvert --to notebook --execute notebook/code.ipynb --output test_output.ipynb
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: notebook-test-results
+          path: test_output.ipynb
+
+  validate-ai-services:
+    name: Validate AI Service Integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Test AI service endpoints
+        run: |
+          python -m pytest services/tests/ -v -k "test_ai_integration"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Validate agent coordination
+        run: |
+          python -m pytest agents/tests/ -v -k "test_coordination"

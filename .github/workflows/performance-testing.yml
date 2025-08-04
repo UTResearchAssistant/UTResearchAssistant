@@ -1,0 +1,123 @@
+name: Performance and Load Testing
+
+on:
+  schedule:
+    # Run performance tests daily at 3 AM UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      test_duration:
+        description: "Duration of load test in minutes"
+        required: false
+        default: "10"
+      concurrent_users:
+        description: "Number of concurrent users"
+        required: false
+        default: "50"
+
+jobs:
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: research_assistant_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install locust pytest-benchmark
+
+      - name: Start Django application
+        working-directory: ./django_ui
+        run: |
+          python manage.py migrate
+          python manage.py runserver &
+          sleep 10
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/research_assistant_test
+          REDIS_URL: redis://localhost:6379/0
+
+      - name: Run load tests with Locust
+        run: |
+          locust \
+            --host=http://localhost:8000 \
+            --users=${{ github.event.inputs.concurrent_users || '50' }} \
+            --spawn-rate=10 \
+            --run-time=${{ github.event.inputs.test_duration || '10' }}m \
+            --headless \
+            --html=performance-report.html \
+            -f services/tests/locustfile.py
+
+      - name: Run benchmark tests
+        run: |
+          python -m pytest services/tests/benchmark_tests.py --benchmark-json=benchmark-results.json
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: |
+            performance-report.html
+            benchmark-results.json
+
+  memory-profiling:
+    name: Memory Profiling
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install memory-profiler psutil
+
+      - name: Profile memory usage
+        run: |
+          python -m memory_profiler services/tests/memory_test.py > memory-profile.txt
+
+      - name: Upload memory profile
+        uses: actions/upload-artifact@v3
+        with:
+          name: memory-profile
+          path: memory-profile.txt

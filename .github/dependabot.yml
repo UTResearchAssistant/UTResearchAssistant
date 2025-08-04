@@ -1,0 +1,55 @@
+# Security and Code Quality Configuration
+
+# GitHub Security Advisory Configuration
+name: Security Advisories
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Weekly on Mondays
+
+# Dependabot Configuration
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "security-team"
+    assignees:
+      - "security-team"
+    commit-message:
+      prefix: "security"
+      include: "scope"
+
+  # Django dependencies
+  - package-ecosystem: "pip"
+    directory: "/django_ui"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "security-team"
+
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "security-team"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "security-team"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "security-team"

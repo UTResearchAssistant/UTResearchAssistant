@@ -1,0 +1,39 @@
+# Pylint configuration for AI Research Assistant
+[MASTER]
+load-plugins=pylint_django
+django-settings-module=django_ui.settings
+
+[MESSAGES CONTROL]
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    R0903,  # too-few-public-methods
+    R0913,  # too-many-arguments
+    W0613,  # unused-argument
+    W0621,  # redefined-outer-name
+
+[FORMAT]
+max-line-length=127
+good-names=i,j,k,ex,Run,_,id,pk
+
+[DESIGN]
+max-args=10
+max-locals=20
+max-returns=6
+max-branches=15
+max-statements=50
+
+[IMPORTS]
+known-third-party=
+    django,
+    rest_framework,
+    openai,
+    requests,
+    asyncio,
+    textstat
+
+[SIMILARITIES]
+min-similarity-lines=4
+ignore-comments=yes
+ignore-docstrings=yes
