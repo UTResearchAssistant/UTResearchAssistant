@@ -1,0 +1,170 @@
+name: Security Scanning (Open Source)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run security scan weekly on Sundays at 2 AM UTC
+    - cron: "0 2 * * 0"
+
+jobs:
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety bandit semgrep pip-audit
+
+      - name: Create reports directory
+        run: mkdir -p security-reports
+
+      - name: Run Safety check (Python vulnerabilities)
+        run: |
+          safety check --json --output security-reports/safety-report.json || true
+          safety check --short-report || echo "⚠️ Vulnerabilities found - check safety-report.json"
+
+      - name: Run Bandit security scan (Python)
+        run: |
+          bandit -r . -f json -o security-reports/bandit-report.json || true
+          bandit -r . --severity-level medium || echo "⚠️ Security issues found - check bandit-report.json"
+
+      - name: Run pip-audit (Python package vulnerabilities)
+        run: |
+          pip-audit --format=json --output=security-reports/pip-audit-report.json || true
+          pip-audit --desc || echo "⚠️ Package vulnerabilities found - check pip-audit-report.json"
+
+      - name: Run Semgrep security scan
+        run: |
+          semgrep --config=auto --json --output=security-reports/semgrep-report.json . || true
+          semgrep --config=p/python --config=p/django --config=p/security-audit . || echo "⚠️ Security patterns found - check semgrep-report.json"
+
+      - name: Generate security summary
+        run: |
+          echo "# Security Scan Summary" > security-reports/summary.md
+          echo "Generated on: $(date)" >> security-reports/summary.md
+          echo "" >> security-reports/summary.md
+
+          echo "## Safety (Python Package Vulnerabilities)" >> security-reports/summary.md
+          if [ -f security-reports/safety-report.json ]; then
+            echo "✅ Safety scan completed - check safety-report.json for details" >> security-reports/summary.md
+          else
+            echo "❌ Safety scan failed" >> security-reports/summary.md
+          fi
+          echo "" >> security-reports/summary.md
+
+          echo "## Bandit (Python Code Security)" >> security-reports/summary.md
+          if [ -f security-reports/bandit-report.json ]; then
+            echo "✅ Bandit scan completed - check bandit-report.json for details" >> security-reports/summary.md
+          else
+            echo "❌ Bandit scan failed" >> security-reports/summary.md
+          fi
+          echo "" >> security-reports/summary.md
+
+          echo "## Pip-Audit (Package Vulnerabilities)" >> security-reports/summary.md
+          if [ -f security-reports/pip-audit-report.json ]; then
+            echo "✅ Pip-audit scan completed - check pip-audit-report.json for details" >> security-reports/summary.md
+          else
+            echo "❌ Pip-audit scan failed" >> security-reports/summary.md
+          fi
+          echo "" >> security-reports/summary.md
+
+          echo "## Semgrep (Security Patterns)" >> security-reports/summary.md
+          if [ -f security-reports/semgrep-report.json ]; then
+            echo "✅ Semgrep scan completed - check semgrep-report.json for details" >> security-reports/summary.md
+          else
+            echo "❌ Semgrep scan failed" >> security-reports/summary.md
+          fi
+
+          cat security-reports/summary.md
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-reports
+          path: security-reports/
+          retention-days: 30
+
+      - name: Comment on PR (if PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('security-reports/summary.md')) {
+              const summary = fs.readFileSync('security-reports/summary.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '## 🔒 Security Scan Results\n\n' + summary
+              });
+            }
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          comment-summary-in-pr: true
+
+  secrets-scan:
+    name: Secrets Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install TruffleHog
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run TruffleHog secrets scan
+        run: |
+          trufflehog git file://. --json --no-verification > secrets-report.json || true
+
+          # Count findings
+          SECRETS_COUNT=$(cat secrets-report.json | wc -l)
+          echo "Found $SECRETS_COUNT potential secrets"
+
+          if [ $SECRETS_COUNT -gt 0 ]; then
+            echo "⚠️ Potential secrets detected - review secrets-report.json"
+            echo "## Potential Secrets Found" >> security-summary.md
+            echo "Found $SECRETS_COUNT potential secrets in the repository" >> security-summary.md
+          else
+            echo "✅ No secrets detected"
+            echo "## Secrets Scan" >> security-summary.md
+            echo "✅ No potential secrets found" >> security-summary.md
+          fi
+
+      - name: Upload secrets report
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets-scan-report
+          path: |
+            secrets-report.json
+            security-summary.md
+          retention-days: 30
