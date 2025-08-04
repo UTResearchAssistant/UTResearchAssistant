@@ -1,0 +1,539 @@
+{% extends 'base.html' %} {% block title %}Cloud Job Details - {{
+job.external_job_id|truncatechars:12 }}{% endblock %} {% block content %}
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Training Job Details</h1>
+          <p class="mt-2 text-gray-600">
+            {{ job.configuration.name }} on {{ job.cloud_provider.name }}
+          </p>
+        </div>
+        <div class="flex space-x-3">
+          <a
+            href="{% url 'training_config:cloud_dashboard' %}"
+            class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+          >
+            Back to Dashboard
+          </a>
+          {% if job.status == 'running' %}
+          <button
+            onclick="stopTraining()"
+            class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+          >
+            Stop Training
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Status Overview -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Job Status</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">
+                <span
+                  class="px-3 py-1 rounded-full text-sm {% if job.status == 'running' %}bg-blue-100 text-blue-800 {% elif job.status == 'completed' %}bg-green-100 text-green-800 {% elif job.status == 'failed' %}bg-red-100 text-red-800 {% else %}bg-yellow-100 text-yellow-800{% endif %}"
+                >
+                  {{ job.get_status_display }}
+                </span>
+              </div>
+              <div class="text-sm text-gray-500 mt-1">Status</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">
+                {{ job.progress_percentage|default:0 }}%
+              </div>
+              <div class="text-sm text-gray-500 mt-1">Progress</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">
+                {% if job.current_epoch %}{{ job.current_epoch }}/{{
+                job.configuration.max_epochs }}{% else %}0/{{
+                job.configuration.max_epochs }}{% endif %}
+              </div>
+              <div class="text-sm text-gray-500 mt-1">Epochs</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">
+                {% if job.actual_cost %}${{ job.actual_cost }}{% else %}${{
+                job.estimated_cost|default:"0" }}{% endif %}
+              </div>
+              <div class="text-sm text-gray-500 mt-1">Cost</div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="mt-6">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Training Progress</span>
+              <span>{{ job.progress_percentage|default:0 }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+              <div
+                class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                style="width: {{ job.progress_percentage|default:0 }}%"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Metrics Chart -->
+        {% if job.status == 'running' %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">
+              Live Training Metrics
+            </h2>
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-3 h-3 bg-green-400 rounded-full animate-pulse"
+              ></div>
+              <span class="text-sm text-gray-600">Live</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <canvas id="lossChart" width="400" height="200"></canvas>
+            </div>
+            <div>
+              <canvas id="accuracyChart" width="400" height="200"></canvas>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div
+                class="text-lg font-semibold text-gray-900"
+                id="current-loss"
+              >
+                -
+              </div>
+              <div class="text-sm text-gray-500">Current Loss</div>
+            </div>
+            <div>
+              <div
+                class="text-lg font-semibold text-gray-900"
+                id="current-accuracy"
+              >
+                -
+              </div>
+              <div class="text-sm text-gray-500">Accuracy</div>
+            </div>
+            <div>
+              <div
+                class="text-lg font-semibold text-gray-900"
+                id="learning-rate"
+              >
+                -
+              </div>
+              <div class="text-sm text-gray-500">Learning Rate</div>
+            </div>
+            <div>
+              <div class="text-lg font-semibold text-gray-900" id="gpu-usage">
+                -
+              </div>
+              <div class="text-sm text-gray-500">GPU Usage</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Training Configuration -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Training Configuration
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-medium text-gray-900 mb-3">Model & Data</h3>
+              <dl class="space-y-2">
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Base Model:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.base_model.name }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Dataset:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.dataset.name }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Training Method:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.get_training_type_display }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 mb-3">Hyperparameters</h3>
+              <dl class="space-y-2">
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Learning Rate:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.learning_rate }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Batch Size:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.batch_size }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">Max Epochs:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.max_epochs }}
+                  </dd>
+                </div>
+                {% if job.configuration.adapter_config %}
+                <div class="flex justify-between">
+                  <dt class="text-sm text-gray-500">LoRA Rank:</dt>
+                  <dd class="text-sm text-gray-900">
+                    {{ job.configuration.adapter_config.lora_rank }}
+                  </dd>
+                </div>
+                {% endif %}
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Training Logs
+          </h2>
+          <div
+            class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-96 overflow-y-auto"
+            id="training-logs"
+          >
+            {% if job.logs %} {{ job.logs|linebreaks }} {% else %}
+            <div class="text-gray-500">No logs available yet...</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Job Info -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Job Information
+          </h3>
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Job ID</dt>
+              <dd class="text-sm text-gray-900 break-all">
+                {{ job.external_job_id }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Cloud Provider</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.cloud_provider.name }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Hardware</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.configuration.hardware_profile.name }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Created</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.created_at|date:"M d, Y H:i" }}
+              </dd>
+            </div>
+            {% if job.started_at %}
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Started</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.started_at|date:"M d, Y H:i" }}
+              </dd>
+            </div>
+            {% endif %} {% if job.ended_at %}
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Ended</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.ended_at|date:"M d, Y H:i" }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Duration</dt>
+              <dd class="text-sm text-gray-900">
+                {{ job.ended_at|timesince:job.started_at }}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Quick Actions
+          </h3>
+          <div class="space-y-3">
+            {% if job.status == 'running' %}
+            <button
+              onclick="refreshMetrics()"
+              class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Refresh Metrics
+            </button>
+            {% endif %} {% if job.notebook_url %}
+            <a
+              href="{{ job.notebook_url }}"
+              target="_blank"
+              class="block w-full bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors text-center"
+            >
+              Open Notebook
+            </a>
+            {% endif %} {% if job.status == 'completed' and
+            job.model_artifacts_url %}
+            <a
+              href="{{ job.model_artifacts_url }}"
+              class="block w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-center"
+            >
+              Download Model
+            </a>
+            {% endif %}
+            <button
+              onclick="shareJob()"
+              class="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              Share Job
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Metrics -->
+        {% if recent_metrics %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Recent Metrics
+          </h3>
+          <div class="space-y-3">
+            {% for metric in recent_metrics|slice:":5" %}
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-100"
+            >
+              <div>
+                <div class="text-sm font-medium text-gray-900">
+                  Epoch {{ metric.epoch }}
+                </div>
+                <div class="text-xs text-gray-500">
+                  {{ metric.timestamp|timesince }} ago
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ metric.loss|floatformat:4 }}
+                </div>
+                <div class="text-xs text-gray-500">Loss</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts and Real-time Updates -->
+{% if job.status == 'running' %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let lossChart, accuracyChart;
+  let lossData = [],
+    accuracyData = [],
+    epochs = [];
+
+  // Initialize charts
+  function initCharts() {
+    const lossCtx = document.getElementById("lossChart").getContext("2d");
+    const accuracyCtx = document
+      .getElementById("accuracyChart")
+      .getContext("2d");
+
+    lossChart = new Chart(lossCtx, {
+      type: "line",
+      data: {
+        labels: epochs,
+        datasets: [
+          {
+            label: "Training Loss",
+            data: lossData,
+            borderColor: "rgb(59, 130, 246)",
+            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+          },
+        },
+      },
+    });
+
+    accuracyChart = new Chart(accuracyCtx, {
+      type: "line",
+      data: {
+        labels: epochs,
+        datasets: [
+          {
+            label: "Accuracy",
+            data: accuracyData,
+            borderColor: "rgb(34, 197, 94)",
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            max: 1.0,
+          },
+        },
+      },
+    });
+  }
+
+  // Start real-time updates
+  function startRealTimeUpdates() {
+    const eventSource = new EventSource(
+      `{% url 'training_config:live_metrics_stream' job_id=job.id %}`
+    );
+
+    eventSource.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      updateMetrics(data);
+    };
+
+    eventSource.onerror = function (event) {
+      console.error("EventSource failed:", event);
+      setTimeout(startRealTimeUpdates, 5000); // Retry after 5 seconds
+    };
+  }
+
+  // Update metrics display
+  function updateMetrics(data) {
+    // Update current values
+    document.getElementById("current-loss").textContent = data.loss
+      ? data.loss.toFixed(4)
+      : "-";
+    document.getElementById("current-accuracy").textContent = data.accuracy
+      ? (data.accuracy * 100).toFixed(2) + "%"
+      : "-";
+    document.getElementById("learning-rate").textContent = data.learning_rate
+      ? data.learning_rate.toExponential(2)
+      : "-";
+    document.getElementById("gpu-usage").textContent = data.gpu_usage
+      ? data.gpu_usage.toFixed(1) + "%"
+      : "-";
+
+    // Update charts
+    if (data.epoch && data.loss) {
+      epochs.push(data.epoch);
+      lossData.push(data.loss);
+      if (data.accuracy) accuracyData.push(data.accuracy);
+
+      // Keep only last 50 points
+      if (epochs.length > 50) {
+        epochs.shift();
+        lossData.shift();
+        accuracyData.shift();
+      }
+
+      lossChart.update();
+      accuracyChart.update();
+    }
+
+    // Update progress
+    if (data.progress_percentage) {
+      const progressBar = document.querySelector(".bg-blue-600");
+      progressBar.style.width = data.progress_percentage + "%";
+      document.querySelector(".progress-text").textContent =
+        data.progress_percentage + "%";
+    }
+  }
+
+  // Initialize when page loads
+  document.addEventListener("DOMContentLoaded", function () {
+    initCharts();
+    startRealTimeUpdates();
+  });
+
+  function refreshMetrics() {
+    fetch(`{% url 'training_config:training_metrics_api' job_id=job.id %}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.metrics && data.metrics.length > 0) {
+          updateMetrics(data.metrics[data.metrics.length - 1]);
+        }
+      })
+      .catch((error) => console.error("Error refreshing metrics:", error));
+  }
+</script>
+{% endif %}
+
+<script>
+  function stopTraining() {
+    if (confirm("Are you sure you want to stop this training job?")) {
+      fetch(`{% url 'training_config:cloud_job_detail' job_id=job.id %}stop/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+            .value,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert("Failed to stop training job: " + data.error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to stop training job");
+        });
+    }
+  }
+
+  function shareJob() {
+    const url = window.location.href;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Job URL copied to clipboard!");
+      })
+      .catch(() => {
+        prompt("Copy this URL:", url);
+      });
+  }
+</script>
+{% endblock %}

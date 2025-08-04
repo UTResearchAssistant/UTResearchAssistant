@@ -14,4 +14,7 @@ urlpatterns = [
     path("api/citation/", include("citation_management.urls")),
     path("api/collaboration/", include("collaboration.urls")),
     path("api/alerts/", include("alerts.urls")),
+    path("datasets/", include("dataset_models.urls")),
+    path("training/", include("training_config.urls")),
+    path("api/explanation/", include("self_explanation.urls")),
 ]

@@ -1,0 +1,544 @@
+{% extends "core/base.html" %} {% block title %}Configuration Builder - Research
+Assistant{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Header -->
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="h3 mb-1">
+            <i class="fas fa-hammer me-2 text-primary"></i>
+            Training Configuration Builder
+          </h2>
+          <p class="text-muted mb-0">
+            Design and estimate your ML training configuration
+          </p>
+        </div>
+        <a
+          href="{% url 'training_config:dashboard' %}"
+          class="btn btn-outline-secondary"
+        >
+          <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" id="configurationForm">
+    {% csrf_token %}
+    <div class="row">
+      <!-- Configuration Form -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-cog me-2"></i>Configuration Settings
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Basic Information -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-info-circle me-2"></i>Basic Information
+                </h6>
+              </div>
+              <div class="col-md-6">
+                <label for="name" class="form-label"
+                  >Configuration Name *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="e.g., LLaMA-7B LoRA Fine-tuning"
+                />
+              </div>
+            </div>
+
+            <!-- Dataset Selection -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-database me-2"></i>Dataset Selection
+                </h6>
+              </div>
+              <div class="col-md-12">
+                <label for="dataset" class="form-label">Dataset *</label>
+                <select
+                  class="form-select"
+                  id="dataset"
+                  name="dataset"
+                  required
+                >
+                  <option value="">Select a dataset...</option>
+                  {% for dataset in datasets %}
+                  <option
+                    value="{{ dataset.id }}"
+                    data-examples="{{ dataset.num_examples }}"
+                    data-tokens="{{ dataset.total_tokens }}"
+                    data-size="{{ dataset.size_gb }}"
+                  >
+                    {{ dataset.name }} ({{ dataset.num_examples|floatformat:0 }}
+                    examples, {{ dataset.size_gb }}GB)
+                  </option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">
+                  Select the dataset for training. Size and token count will
+                  affect training time.
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Selection -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-brain me-2"></i>Base Model Selection
+                </h6>
+              </div>
+              <div class="col-md-12">
+                <label for="base_model" class="form-label">Base Model *</label>
+                <select
+                  class="form-select"
+                  id="base_model"
+                  name="base_model"
+                  required
+                >
+                  <option value="">Select a model...</option>
+                  {% for model in models %}
+                  <option
+                    value="{{ model.id }}"
+                    data-params="{{ model.parameter_count }}"
+                    data-memory="{{ model.memory_footprint_gb }}"
+                    data-supports-lora="{{ model.supports_lora }}"
+                  >
+                    {{ model.name }} ({{ model.parameter_count|floatformat:0 }}
+                    params)
+                  </option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">
+                  Base model architecture and size significantly impact training
+                  time and memory requirements.
+                </div>
+              </div>
+            </div>
+
+            <!-- Adapter Configuration -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-layer-group me-2"></i>Adapter Configuration
+                </h6>
+              </div>
+              <div class="col-md-12">
+                <label for="adapter" class="form-label">Adapter Type *</label>
+                <select
+                  class="form-select"
+                  id="adapter"
+                  name="adapter"
+                  required
+                >
+                  <option value="">Select adapter type...</option>
+                  {% for adapter in adapters %}
+                  <option
+                    value="{{ adapter.id }}"
+                    data-type="{{ adapter.adapter_type }}"
+                    data-rank="{{ adapter.lora_rank }}"
+                    data-alpha="{{ adapter.lora_alpha }}"
+                  >
+                    {{ adapter.name }} {% if adapter.adapter_type == 'LORA' %}
+                    (LoRA r={{ adapter.lora_rank }}) {% endif %}
+                  </option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">
+                  LoRA adapters reduce training time and memory usage compared
+                  to full fine-tuning.
+                </div>
+              </div>
+            </div>
+
+            <!-- Hardware Selection -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-server me-2"></i>Hardware Configuration
+                </h6>
+              </div>
+              <div class="col-md-12">
+                <label for="hardware" class="form-label"
+                  >Hardware Profile *</label
+                >
+                <select
+                  class="form-select"
+                  id="hardware"
+                  name="hardware"
+                  required
+                >
+                  <option value="">Select hardware...</option>
+                  {% for hw in hardware %}
+                  <option
+                    value="{{ hw.id }}"
+                    data-device="{{ hw.device_type }}"
+                    data-memory="{{ hw.memory_gb }}"
+                    data-cost="{{ hw.cost_per_hour }}"
+                    data-fp16="{{ hw.fp16_tflops }}"
+                  >
+                    {{ hw.name }} ({{ hw.memory_gb }}GB, ${{ hw.cost_per_hour
+                    }}/hr)
+                  </option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">
+                  Hardware choice affects training speed and cost per hour.
+                </div>
+              </div>
+            </div>
+
+            <!-- Training Hyperparameters -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="border-bottom pb-2 mb-3">
+                  <i class="fas fa-sliders-h me-2"></i>Training Hyperparameters
+                </h6>
+              </div>
+              <div class="col-md-6">
+                <label for="learning_rate" class="form-label"
+                  >Learning Rate</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="learning_rate"
+                  name="learning_rate"
+                  value="5e-5"
+                  step="1e-6"
+                  min="1e-6"
+                  max="1e-2"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="batch_size" class="form-label">Batch Size</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="batch_size"
+                  name="batch_size"
+                  value="32"
+                  min="1"
+                  max="512"
+                />
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="epochs" class="form-label">Epochs</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="epochs"
+                  name="epochs"
+                  value="3"
+                  min="1"
+                  max="100"
+                />
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="gradient_accumulation_steps" class="form-label"
+                  >Gradient Accumulation Steps</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="gradient_accumulation_steps"
+                  name="gradient_accumulation_steps"
+                  value="1"
+                  min="1"
+                  max="64"
+                />
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="optimizer" class="form-label">Optimizer</label>
+                <select class="form-select" id="optimizer" name="optimizer">
+                  <option value="ADAMW" selected>AdamW</option>
+                  <option value="ADAM">Adam</option>
+                  <option value="SGD">SGD</option>
+                  <option value="RMSPROP">RMSprop</option>
+                </select>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="precision" class="form-label">Precision</label>
+                <select class="form-select" id="precision" name="precision">
+                  <option value="FP16" selected>FP16 (Recommended)</option>
+                  <option value="BF16">BF16</option>
+                  <option value="FP32">FP32</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Advanced Settings (Collapsible) -->
+            <div class="row">
+              <div class="col-12">
+                <div class="card border-0 bg-light">
+                  <div class="card-header bg-transparent border-0 pb-0">
+                    <h6 class="mb-0">
+                      <button
+                        class="btn btn-link text-decoration-none p-0"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#advancedSettings"
+                      >
+                        <i class="fas fa-chevron-down me-2"></i>Advanced
+                        Settings
+                      </button>
+                    </h6>
+                  </div>
+                  <div class="collapse" id="advancedSettings">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="weight_decay" class="form-label"
+                            >Weight Decay</label
+                          >
+                          <input
+                            type="number"
+                            class="form-control"
+                            id="weight_decay"
+                            name="weight_decay"
+                            value="0.01"
+                            step="0.001"
+                            min="0"
+                            max="1"
+                          />
+                        </div>
+                        <div class="col-md-6">
+                          <label for="warmup_steps" class="form-label"
+                            >Warmup Steps</label
+                          >
+                          <input
+                            type="number"
+                            class="form-control"
+                            id="warmup_steps"
+                            name="warmup_steps"
+                            value="100"
+                            min="0"
+                            max="10000"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Estimation Panel -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm sticky-top" style="top: 1rem">
+          <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-calculator me-2"></i>Live Estimation
+            </h5>
+          </div>
+          <div class="card-body">
+            <div id="estimationResults" class="text-center">
+              <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+              <p class="text-muted">
+                Fill in the configuration form to see live cost and time
+                estimates.
+              </p>
+            </div>
+
+            <!-- Estimation Details (Hidden initially) -->
+            <div id="estimationDetails" style="display: none">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between">
+                      <span>Estimated Time:</span>
+                      <strong id="estimatedTime">-</strong>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 mb-3">
+                  <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between">
+                      <span>Estimated Cost:</span>
+                      <strong id="estimatedCost" class="text-success">-</strong>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 mb-3">
+                  <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between">
+                      <span>GPU Hours:</span>
+                      <strong id="gpuHours">-</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Configuration Summary -->
+              <div class="border-top pt-3 mt-3">
+                <h6 class="mb-2">Configuration Summary</h6>
+                <div class="small text-muted">
+                  <div id="configSummary">
+                    <p>
+                      <strong>Dataset:</strong>
+                      <span id="summaryDataset">-</span>
+                    </p>
+                    <p>
+                      <strong>Model:</strong> <span id="summaryModel">-</span>
+                    </p>
+                    <p>
+                      <strong>Adapter:</strong>
+                      <span id="summaryAdapter">-</span>
+                    </p>
+                    <p>
+                      <strong>Hardware:</strong>
+                      <span id="summaryHardware">-</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 mt-4">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                id="estimateBtn"
+                disabled
+              >
+                <i class="fas fa-calculator me-2"></i>Update Estimate
+              </button>
+              <button
+                type="submit"
+                class="btn btn-success"
+                id="createBtn"
+                disabled
+              >
+                <i class="fas fa-save me-2"></i>Create Configuration
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("configurationForm");
+    const estimateBtn = document.getElementById("estimateBtn");
+    const createBtn = document.getElementById("createBtn");
+    const requiredFields = [
+      "dataset",
+      "base_model",
+      "adapter",
+      "hardware",
+      "name",
+    ];
+
+    // Form validation and estimation update
+    function validateForm() {
+      let allFilled = true;
+      requiredFields.forEach((field) => {
+        if (!document.getElementById(field).value) {
+          allFilled = false;
+        }
+      });
+
+      estimateBtn.disabled = !allFilled;
+      createBtn.disabled = !allFilled;
+
+      if (allFilled) {
+        updateEstimation();
+      }
+    }
+
+    // Update estimation
+    function updateEstimation() {
+      const formData = new FormData(form);
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        data[key + "_id"] = value;
+      }
+
+      fetch('{% url "training_config:estimate_configuration" %}', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+            .value,
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("estimationResults").style.display = "none";
+            document.getElementById("estimationDetails").style.display =
+              "block";
+
+            document.getElementById("estimatedTime").textContent =
+              data.metrics.time_hours + " hours";
+            document.getElementById("estimatedCost").textContent =
+              "$" + data.metrics.cost_usd;
+            document.getElementById("gpuHours").textContent =
+              data.metrics.gpu_hours + " hours";
+
+            // Update summary
+            updateSummary();
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+    // Update configuration summary
+    function updateSummary() {
+      const dataset = document.getElementById("dataset");
+      const model = document.getElementById("base_model");
+      const adapter = document.getElementById("adapter");
+      const hardware = document.getElementById("hardware");
+
+      document.getElementById("summaryDataset").textContent =
+        dataset.options[dataset.selectedIndex]?.text?.split("(")[0] || "-";
+      document.getElementById("summaryModel").textContent =
+        model.options[model.selectedIndex]?.text?.split("(")[0] || "-";
+      document.getElementById("summaryAdapter").textContent =
+        adapter.options[adapter.selectedIndex]?.text || "-";
+      document.getElementById("summaryHardware").textContent =
+        hardware.options[hardware.selectedIndex]?.text?.split("(")[0] || "-";
+    }
+
+    // Add event listeners
+    requiredFields.forEach((field) => {
+      document.getElementById(field).addEventListener("change", validateForm);
+    });
+
+    estimateBtn.addEventListener("click", updateEstimation);
+
+    // Form submission
+    form.addEventListener("submit", function (e) {
+      if (!createBtn.disabled) {
+        // Form is valid, let it submit normally
+        return true;
+      } else {
+        e.preventDefault();
+        alert(
+          "Please fill in all required fields before creating the configuration."
+        );
+      }
+    });
+  });
+</script>
+{% endblock %}

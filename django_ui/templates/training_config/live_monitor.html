@@ -1,0 +1,483 @@
+{% extends 'base.html' %} {% block title %}Live Training Monitor - Training
+Configuration{% endblock %} {% block content %}
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Live Training Monitor
+          </h1>
+          <p class="mt-2 text-gray-600">
+            Real-time monitoring of all active training jobs
+          </p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-gray-600">Live Updates</span>
+          </div>
+          <a
+            href="{% url 'training_config:cloud_dashboard' %}"
+            class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+          >
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% if active_jobs %}
+    <!-- Active Jobs Grid -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+      {% for job in active_jobs %}
+      <div
+        class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500"
+        id="job-{{ job.id }}"
+      >
+        <!-- Job Header -->
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">
+              {{ job.configuration.name }}
+            </h3>
+            <p class="text-sm text-gray-600">
+              {{ job.cloud_provider.name }} • {{
+              job.configuration.base_model.name }}
+            </p>
+          </div>
+          <div class="text-right">
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800"
+            >
+              {{ job.get_status_display }}
+            </span>
+            <div class="text-xs text-gray-500 mt-1">
+              Job {{ job.external_job_id|truncatechars:8 }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span>Training Progress</span>
+            <span class="progress-text"
+              >{{ job.progress_percentage|default:0 }}%</span
+            >
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div
+              class="bg-blue-600 h-2 rounded-full transition-all duration-300 progress-bar"
+              style="width: {{ job.progress_percentage|default:0 }}%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Live Metrics -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="text-center">
+            <div class="text-xl font-bold text-gray-900 loss-value">
+              {% if job.current_loss %}{{ job.current_loss|floatformat:4 }}{%
+              else %}-{% endif %}
+            </div>
+            <div class="text-sm text-gray-500">Loss</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-gray-900 accuracy-value">
+              {% if job.current_accuracy %}{{ job.current_accuracy|floatformat:2
+              }}%{% else %}-{% endif %}
+            </div>
+            <div class="text-sm text-gray-500">Accuracy</div>
+          </div>
+        </div>
+
+        <!-- Mini Chart -->
+        <div class="mb-4">
+          <canvas
+            class="loss-chart"
+            width="400"
+            height="150"
+            data-job-id="{{ job.id }}"
+          ></canvas>
+        </div>
+
+        <!-- Job Stats -->
+        <div class="grid grid-cols-3 gap-4 text-center text-sm">
+          <div>
+            <div class="font-medium text-gray-900 epoch-text">
+              {% if job.current_epoch %}{{ job.current_epoch }}{% else %}0{%
+              endif %}/{{ job.configuration.max_epochs }}
+            </div>
+            <div class="text-gray-500">Epochs</div>
+          </div>
+          <div>
+            <div class="font-medium text-gray-900 lr-value">
+              {% if job.current_learning_rate %}{{
+              job.current_learning_rate|floatformat:6 }}{% else %}-{% endif %}
+            </div>
+            <div class="text-gray-500">Learning Rate</div>
+          </div>
+          <div>
+            <div class="font-medium text-gray-900 gpu-usage">
+              {% if job.gpu_usage %}{{ job.gpu_usage|floatformat:1 }}%{% else
+              %}-{% endif %}
+            </div>
+            <div class="text-gray-500">GPU Usage</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4 flex space-x-2">
+          <a
+            href="{% url 'training_config:cloud_job_detail' job_id=job.id %}"
+            class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md text-sm text-center hover:bg-blue-700 transition-colors"
+          >
+            View Details
+          </a>
+          <button
+            onclick="stopJob('{{ job.id }}')"
+            class="bg-red-600 text-white px-3 py-2 rounded-md text-sm hover:bg-red-700 transition-colors"
+          >
+            Stop
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- System Metrics -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">System Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-blue-600" id="total-jobs">
+            {{ active_jobs|length }}
+          </div>
+          <div class="text-sm text-gray-500">Active Jobs</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-600" id="total-providers">
+            {{ cloud_providers|length }}
+          </div>
+          <div class="text-sm text-gray-500">Cloud Providers</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-orange-600" id="total-cost">
+            $<span class="total-cost-value"
+              >{{ total_estimated_cost|default:"0.00" }}</span
+            >
+          </div>
+          <div class="text-sm text-gray-500">Est. Total Cost</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-purple-600" id="avg-progress">
+            {{ average_progress|default:"0" }}%
+          </div>
+          <div class="text-sm text-gray-500">Avg Progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Usage -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">
+        Resource Usage by Provider
+      </h2>
+      <div class="space-y-4">
+        {% for provider in cloud_providers %}
+        <div class="border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-medium text-gray-900">{{ provider.name }}</h3>
+            <span class="text-sm text-gray-500"
+              >{{ provider.running_jobs }} active jobs</span
+            >
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div
+              class="bg-green-600 h-2 rounded-full"
+              style="width: {{ provider.usage_percentage|default:0 }}%"
+            ></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span
+              >{{ provider.running_jobs }}/{{ provider.max_concurrent_jobs }}
+              jobs</span
+            >
+            <span>{{ provider.usage_percentage|default:0 }}% capacity</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% else %}
+    <!-- No Active Jobs -->
+    <div class="bg-white rounded-lg shadow-md p-12 text-center">
+      <div class="text-gray-400 mb-4">
+        <svg
+          class="mx-auto h-16 w-16"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+      </div>
+      <h3 class="text-xl font-medium text-gray-900 mb-2">
+        No Active Training Jobs
+      </h3>
+      <p class="text-gray-500 mb-6">
+        Start a new training job to see live monitoring here
+      </p>
+      <a
+        href="{% url 'training_config:cloud_dashboard' %}"
+        class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Start New Training
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Real-time Updates -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let charts = {};
+  let eventSources = {};
+
+  // Initialize mini charts for each job
+  function initMiniCharts() {
+      {% for job in active_jobs %}
+      const canvas{{ job.id }} = document.querySelector(`[data-job-id="{{ job.id }}"]`);
+      if (canvas{{ job.id }}) {
+          charts['{{ job.id }}'] = new Chart(canvas{{ job.id }}, {
+              type: 'line',
+              data: {
+                  labels: [],
+                  datasets: [{
+                      label: 'Loss',
+                      data: [],
+                      borderColor: 'rgb(59, 130, 246)',
+                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                      borderWidth: 2,
+                      pointRadius: 1,
+                      tension: 0.1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      legend: {
+                          display: false
+                      }
+                  },
+                  scales: {
+                      x: {
+                          display: false
+                      },
+                      y: {
+                          display: true,
+                          grid: {
+                              display: false
+                          },
+                          ticks: {
+                              font: {
+                                  size: 10
+                              }
+                          }
+                      }
+                  }
+              }
+          });
+
+          // Start real-time updates for this job
+          startJobUpdates('{{ job.id }}');
+      }
+      {% endfor %}
+  }
+
+  // Start real-time updates for a specific job
+  function startJobUpdates(jobId) {
+      if (eventSources[jobId]) {
+          eventSources[jobId].close();
+      }
+
+      const eventSource = new EventSource(`/training/api/stream/${jobId}/`);
+      eventSources[jobId] = eventSource;
+
+      eventSource.onmessage = function(event) {
+          const data = JSON.parse(event.data);
+          updateJobMetrics(jobId, data);
+      };
+
+      eventSource.onerror = function(event) {
+          console.error(`EventSource failed for job ${jobId}:`, event);
+          setTimeout(() => startJobUpdates(jobId), 5000); // Retry after 5 seconds
+      };
+  }
+
+  // Update metrics for a specific job
+  function updateJobMetrics(jobId, data) {
+      const jobElement = document.getElementById(`job-${jobId}`);
+      if (!jobElement) return;
+
+      // Update progress
+      if (data.progress_percentage !== undefined) {
+          const progressBar = jobElement.querySelector('.progress-bar');
+          const progressText = jobElement.querySelector('.progress-text');
+          progressBar.style.width = data.progress_percentage + '%';
+          progressText.textContent = data.progress_percentage + '%';
+      }
+
+      // Update loss
+      if (data.loss !== undefined) {
+          const lossElement = jobElement.querySelector('.loss-value');
+          lossElement.textContent = data.loss.toFixed(4);
+      }
+
+      // Update accuracy
+      if (data.accuracy !== undefined) {
+          const accuracyElement = jobElement.querySelector('.accuracy-value');
+          accuracyElement.textContent = (data.accuracy * 100).toFixed(2) + '%';
+      }
+
+      // Update epoch
+      if (data.epoch !== undefined) {
+          const epochElement = jobElement.querySelector('.epoch-text');
+          epochElement.textContent = data.epoch + '/' + data.max_epochs;
+      }
+
+      // Update learning rate
+      if (data.learning_rate !== undefined) {
+          const lrElement = jobElement.querySelector('.lr-value');
+          lrElement.textContent = data.learning_rate.toExponential(2);
+      }
+
+      // Update GPU usage
+      if (data.gpu_usage !== undefined) {
+          const gpuElement = jobElement.querySelector('.gpu-usage');
+          gpuElement.textContent = data.gpu_usage.toFixed(1) + '%';
+      }
+
+      // Update chart
+      if (charts[jobId] && data.epoch !== undefined && data.loss !== undefined) {
+          const chart = charts[jobId];
+          chart.data.labels.push(data.epoch);
+          chart.data.datasets[0].data.push(data.loss);
+
+          // Keep only last 20 points for mini chart
+          if (chart.data.labels.length > 20) {
+              chart.data.labels.shift();
+              chart.data.datasets[0].data.shift();
+          }
+
+          chart.update('none'); // No animation for smoother updates
+      }
+  }
+
+  // Global system updates
+  function updateSystemMetrics() {
+      fetch('/training/api/system-metrics/')
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById('total-jobs').textContent = data.active_jobs || 0;
+              document.getElementById('total-providers').textContent = data.total_providers || 0;
+              document.querySelector('.total-cost-value').textContent = (data.total_cost || 0).toFixed(2);
+              document.getElementById('avg-progress').textContent = (data.average_progress || 0) + '%';
+          })
+          .catch(error => console.error('Error updating system metrics:', error));
+  }
+
+  // Stop a training job
+  function stopJob(jobId) {
+      if (confirm('Are you sure you want to stop this training job?')) {
+          fetch(`/training/cloud/jobs/${jobId}/stop/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Remove the job from display or reload
+                  document.getElementById(`job-${jobId}`).style.opacity = '0.5';
+                  setTimeout(() => location.reload(), 1000);
+              } else {
+                  alert('Failed to stop training job: ' + data.error);
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Failed to stop training job');
+          });
+      }
+  }
+
+  // Initialize everything when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+      initMiniCharts();
+
+      // Update system metrics every 30 seconds
+      setInterval(updateSystemMetrics, 30000);
+  });
+
+  // Cleanup when page unloads
+  window.addEventListener('beforeunload', function() {
+      Object.values(eventSources).forEach(source => source.close());
+  });
+
+  // Auto-refresh page if no activity for 5 minutes (to catch job completions)
+  let lastActivity = Date.now();
+  setInterval(() => {
+      if (Date.now() - lastActivity > 300000) { // 5 minutes
+          location.reload();
+      }
+  }, 60000); // Check every minute
+
+  // Track activity
+  document.addEventListener('click', () => lastActivity = Date.now());
+  document.addEventListener('keypress', () => lastActivity = Date.now());
+</script>
+
+<style>
+  /* Custom animations for live updates */
+  @keyframes pulse-green {
+    0%,
+    100% {
+      background-color: rgb(34, 197, 94);
+    }
+    50% {
+      background-color: rgb(74, 222, 128);
+    }
+  }
+
+  .animate-pulse-green {
+    animation: pulse-green 2s ease-in-out infinite;
+  }
+
+  /* Smooth transitions for metric updates */
+  .loss-value,
+  .accuracy-value,
+  .epoch-text,
+  .lr-value,
+  .gpu-usage {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .loss-value:hover,
+  .accuracy-value:hover {
+    transform: scale(1.05);
+  }
+</style>
+{% endblock %}

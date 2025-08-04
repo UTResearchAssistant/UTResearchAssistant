@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "self_explanation.apps.SelfExplanationConfig",
     "corsheaders",
     "core",
     "literature_search",
@@ -53,6 +54,8 @@ INSTALLED_APPS = [
     "citation_management",
     "collaboration",
     "alerts",
+    "dataset_models",
+    "training_config",
 ]
 
 MIDDLEWARE = [

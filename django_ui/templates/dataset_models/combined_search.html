@@ -1,0 +1,306 @@
+{% extends "core/base.html" %}
+{% block title %}Dataset & Model Search - Research Assistant{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Search Form -->
+    <div class="col-lg-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-search me-2"></i>Search Datasets & Models
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="get">
+            <div class="mb-3">
+              <label for="q" class="form-label">Search Query</label>
+              <input
+                type="text"
+                class="form-control"
+                id="q"
+                name="q"
+                value="{{ query }}"
+                placeholder="e.g., BERT, ImageNet, sentiment analysis"
+                autocomplete="off"
+              />
+              <div id="search-suggestions" class="dropdown-menu w-100" style="display: none;"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="field" class="form-label">Research Field</label>
+              <select class="form-select" id="field" name="field">
+                <option value="">All Fields</option>
+                {% for field in research_fields %}
+                <option value="{{ field.name }}" {% if selected_field == field.name %}selected{% endif %}>
+                  {{ field.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-info w-100">
+              <i class="fas fa-search me-2"></i>Search
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">
+            <i class="fas fa-link me-2"></i>Quick Access
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <a href="{% url 'dataset_models:dataset_search' %}" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-database me-1"></i>Browse Datasets
+            </a>
+            <a href="{% url 'dataset_models:model_search' %}" class="btn btn-outline-success btn-sm">
+              <i class="fas fa-brain me-1"></i>Browse Models
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="col-lg-9">
+      {% if query or selected_field %}
+      
+      <!-- Datasets Section -->
+      {% if datasets %}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-database me-2"></i>Datasets
+          </h5>
+          <a href="{% url 'dataset_models:dataset_search' %}?q={{ query }}&field={{ selected_field }}" class="btn btn-outline-primary btn-sm">
+            View All Datasets
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for dataset in datasets %}
+            <div class="col-md-6 mb-3">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <a href="{% url 'dataset_models:dataset_detail' dataset.id %}" class="text-decoration-none">
+                      {{ dataset.name }}
+                    </a>
+                  </h6>
+                  
+                  <div class="mb-2">
+                    <span class="badge bg-primary">{{ dataset.get_dataset_type_display }}</span>
+                    <span class="badge bg-secondary">{{ dataset.get_license_type_display }}</span>
+                  </div>
+                  
+                  <p class="card-text small text-muted">
+                    {{ dataset.description|truncatewords:20 }}
+                  </p>
+                  
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="small text-muted">
+                      {% if dataset.num_samples %}
+                      <i class="fas fa-chart-bar me-1"></i>{{ dataset.num_samples|floatformat:0 }} samples
+                      {% endif %}
+                    </div>
+                    <div class="small text-muted">
+                      <i class="fas fa-quote-right me-1"></i>{{ dataset.citation_count }} citations
+                    </div>
+                  </div>
+                  
+                  {% if dataset.tags_list %}
+                  <div class="mt-2">
+                    {% for tag in dataset.tags_list|slice:":3" %}
+                    <span class="badge bg-light text-dark">{{ tag }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Models Section -->
+      {% if models %}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-brain me-2"></i>Models
+          </h5>
+          <a href="{% url 'dataset_models:model_search' %}?q={{ query }}&field={{ selected_field }}" class="btn btn-outline-success btn-sm">
+            View All Models
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for model in models %}
+            <div class="col-md-6 mb-3">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <a href="{% url 'dataset_models:model_detail' model.id %}" class="text-decoration-none">
+                      {{ model.name }}
+                    </a>
+                  </h6>
+                  
+                  <div class="mb-2">
+                    <span class="badge bg-success">{{ model.get_model_type_display }}</span>
+                    <span class="badge bg-info">{{ model.get_framework_display }}</span>
+                    {% if model.pretrained %}
+                    <span class="badge bg-warning">Pre-trained</span>
+                    {% endif %}
+                  </div>
+                  
+                  <p class="card-text small text-muted">
+                    {{ model.description|truncatewords:20 }}
+                  </p>
+                  
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="small text-muted">
+                      {% if model.accuracy %}
+                      <i class="fas fa-bullseye me-1"></i>{{ model.accuracy|floatformat:1 }}% accuracy
+                      {% endif %}
+                    </div>
+                    <div class="small text-muted">
+                      <i class="fas fa-quote-right me-1"></i>{{ model.citation_count }} citations
+                    </div>
+                  </div>
+                  
+                  {% if model.tags_list %}
+                  <div class="mt-2">
+                    {% for tag in model.tags_list|slice:":3" %}
+                    <span class="badge bg-light text-dark">{{ tag }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if not datasets and not models %}
+      <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No results found</h5>
+          <p class="text-muted">
+            Try adjusting your search terms or browse by category.
+          </p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% else %}
+      <!-- Welcome Screen -->
+      <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-database fa-3x text-info mb-3"></i>
+          <h4>Dataset & Model Discovery</h4>
+          <p class="text-muted lead">
+            Find the perfect datasets and pre-trained models for your research.
+          </p>
+          
+          <div class="row mt-4">
+            <div class="col-md-4">
+              <div class="card border-0">
+                <div class="card-body">
+                  <i class="fas fa-database fa-2x text-primary mb-3"></i>
+                  <h6>Datasets</h6>
+                  <p class="small text-muted">Curated datasets across multiple domains</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0">
+                <div class="card-body">
+                  <i class="fas fa-brain fa-2x text-success mb-3"></i>
+                  <h6>Pre-trained Models</h6>
+                  <p class="small text-muted">Ready-to-use models for various tasks</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0">
+                <div class="card-body">
+                  <i class="fas fa-filter fa-2x text-warning mb-3"></i>
+                  <h6>Smart Filtering</h6>
+                  <p class="small text-muted">Filter by field, type, and performance</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Search suggestions
+const searchInput = document.getElementById('q');
+const suggestionsDiv = document.getElementById('search-suggestions');
+
+let debounceTimer;
+searchInput.addEventListener('input', function() {
+  clearTimeout(debounceTimer);
+  const query = this.value.trim();
+  
+  if (query.length >= 2) {
+    debounceTimer = setTimeout(() => {
+      fetch(`{% url 'dataset_models:api_suggestions' %}?q=${encodeURIComponent(query)}&type=all`)
+        .then(response => response.json())
+        .then(data => {
+          showSuggestions(data.suggestions);
+        })
+        .catch(error => console.error('Error:', error));
+    }, 300);
+  } else {
+    hideSuggestions();
+  }
+});
+
+function showSuggestions(suggestions) {
+  if (suggestions.length > 0) {
+    suggestionsDiv.innerHTML = suggestions.map(item => 
+      `<div class="dropdown-item" onclick="selectSuggestion('${item.text}')">
+        <i class="fas fa-${item.type === 'dataset' ? 'database' : item.type === 'model' ? 'brain' : 'tag'} me-2"></i>
+        ${item.text}
+      </div>`
+    ).join('');
+    suggestionsDiv.style.display = 'block';
+  } else {
+    hideSuggestions();
+  }
+}
+
+function hideSuggestions() {
+  suggestionsDiv.style.display = 'none';
+}
+
+function selectSuggestion(text) {
+  searchInput.value = text;
+  hideSuggestions();
+}
+
+// Hide suggestions when clicking outside
+document.addEventListener('click', function(event) {
+  if (!searchInput.contains(event.target) && !suggestionsDiv.contains(event.target)) {
+    hideSuggestions();
+  }
+});
+</script>
+{% endblock %}

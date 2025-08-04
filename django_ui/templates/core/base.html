@@ -98,6 +98,43 @@
                             <i class="fas fa-search me-1"></i>Search
                         </a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-database me-1"></i>Resources
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'dataset_models:combined_search' %}">
+                                <i class="fas fa-search me-2"></i>Search All
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'dataset_models:dataset_search' %}">
+                                <i class="fas fa-database me-2"></i>Datasets
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'dataset_models:model_search' %}">
+                                <i class="fas fa-brain me-2"></i>Models
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-cogs me-1"></i>Training
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'training_config:dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'training_config:configuration_builder' %}">
+                                <i class="fas fa-hammer me-2"></i>Config Builder
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'training_config:configuration_list' %}">
+                                <i class="fas fa-list me-2"></i>All Configurations
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'training_config:configuration_comparison' %}">
+                                <i class="fas fa-balance-scale me-2"></i>Compare Configs
+                            </a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'podcast_generator' %}">
                             <i class="fas fa-podcast me-1"></i>Podcasts
