@@ -41,7 +41,7 @@ jobs:
           jupyter nbconvert --to notebook --execute notebook/code.ipynb --output test_output.ipynb
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: notebook-test-results
           path: test_output.ipynb

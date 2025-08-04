@@ -47,7 +47,7 @@ jobs:
             --dataset-path ${{ github.event.inputs.dataset_path || 'datasets/training_data' }}
 
       - name: Upload prepared data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: training-data
           path: datasets/training_data/
@@ -83,7 +83,7 @@ jobs:
           pip install wandb tensorboard
 
       - name: Download prepared data
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: training-data
           path: datasets/training_data/
@@ -104,7 +104,7 @@ jobs:
             --test-data datasets/training_data/test/
 
       - name: Upload trained model
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trained-model
           path: models/trained/
@@ -120,7 +120,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download trained model
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: trained-model
           path: models/trained/

@@ -98,7 +98,7 @@ jobs:
           coverage xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./django_ui/coverage.xml
           flags: backend
@@ -195,7 +195,7 @@ jobs:
           semgrep --config=auto --json --output=semgrep-report.json . || true
 
       - name: Upload security scan results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-reports
           path: |
@@ -311,10 +311,12 @@ jobs:
     if: always()
 
     steps:
-      - name: Notify deployment status
+      - name: Notify deployment status (Optional)
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           channel: "#deployments"
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
+        continue-on-error: true

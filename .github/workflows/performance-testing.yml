@@ -86,7 +86,7 @@ jobs:
           python -m pytest services/tests/benchmark_tests.py --benchmark-json=benchmark-results.json
 
       - name: Upload performance results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: performance-results
           path: |
@@ -117,7 +117,7 @@ jobs:
           python -m memory_profiler services/tests/memory_test.py > memory-profile.txt
 
       - name: Upload memory profile
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: memory-profile
           path: memory-profile.txt

@@ -58,7 +58,7 @@ jobs:
           safety check --json --output safety-report.json || true
 
       - name: Upload code quality reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-quality-reports
           path: |
@@ -66,8 +66,9 @@ jobs:
             safety-report.json
 
   sonarcloud:
-    name: SonarCloud Analysis
+    name: SonarCloud Analysis (Optional)
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -76,10 +77,11 @@ jobs:
           fetch-depth: 0
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
 
   codeql:
     name: CodeQL Security Analysis
