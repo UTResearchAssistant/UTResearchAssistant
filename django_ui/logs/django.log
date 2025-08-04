@@ -4052,3 +4052,1288 @@ INFO 2025-08-03 23:31:53,271 basehttp 43040 6168293376 "GET / HTTP/1.1" 200 2184
 INFO 2025-08-03 23:31:57,372 basehttp 43040 6168293376 "GET /podcasts/ HTTP/1.1" 200 18125
 INFO 2025-08-03 23:31:58,900 basehttp 43040 6168293376 "GET /alerts/ HTTP/1.1" 200 22604
 INFO 2025-08-03 23:32:02,182 basehttp 43040 6168293376 "GET /collaboration/ HTTP/1.1" 200 17079
+INFO 2025-08-04 00:15:53,762 embedder 54767 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:21:11,372 autoreload 56148 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:21:11,892 embedder 56148 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:21:44,245 autoreload 56148 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/writing_assistance/urls.py changed, reloading.
+INFO 2025-08-04 00:21:44,960 autoreload 56180 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:21:45,630 embedder 56180 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:21:59,553 autoreload 56180 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/academic_integrity/urls.py changed, reloading.
+INFO 2025-08-04 00:22:00,213 autoreload 56220 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:22:00,696 embedder 56220 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:22:19,664 autoreload 56220 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/citation_management/urls.py changed, reloading.
+INFO 2025-08-04 00:22:20,209 autoreload 56321 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:22:20,750 embedder 56321 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:22:34,734 autoreload 56321 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/collaboration/urls.py changed, reloading.
+INFO 2025-08-04 00:22:35,268 autoreload 56350 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:22:35,715 embedder 56350 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:22:47,663 autoreload 56350 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/alerts/urls.py changed, reloading.
+INFO 2025-08-04 00:22:48,172 autoreload 56380 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:22:48,843 embedder 56380 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:22:52,886 basehttp 56380 6170243072 "GET / HTTP/1.1" 200 15084
+INFO 2025-08-04 00:22:53,199 basehttp 56380 6170243072 "GET /static/core/style.css HTTP/1.1" 304 0
+INFO 2025-08-04 00:22:55,778 basehttp 56380 6170243072 "GET /login/ HTTP/1.1" 200 12569
+INFO 2025-08-04 00:22:58,590 basehttp 56380 6169669632 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:22:58,645 basehttp 56380 6169669632 "GET / HTTP/1.1" 200 22358
+ERROR 2025-08-04 00:23:00,561 log 56380 6169669632 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:23:00,571 basehttp 56380 6169669632 "GET /videos/ HTTP/1.1" 500 261759
+INFO 2025-08-04 00:23:03,411 basehttp 56380 6169669632 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:23:04,927 basehttp 56380 6169669632 "GET /podcasts/ HTTP/1.1" 200 18125
+ERROR 2025-08-04 00:23:05,678 log 56380 6169669632 Internal Server Error: /search/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 285, in enhanced_search
+    return render(request, "core/enhanced_search.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 157: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:23:05,686 basehttp 56380 6169669632 "GET /search/ HTTP/1.1" 500 320428
+INFO 2025-08-04 00:23:25,279 autoreload 56380 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/collaboration/views.py changed, reloading.
+INFO 2025-08-04 00:23:25,959 autoreload 56470 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:23:26,545 embedder 56470 8205560128 Using OpenAI for embeddings
+ERROR 2025-08-04 00:23:29,954 log 56470 6206091264 Internal Server Error: /search/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 285, in enhanced_search
+    return render(request, "core/enhanced_search.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 157: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:23:29,958 basehttp 56470 6206091264 "GET /search/ HTTP/1.1" 500 320565
+INFO 2025-08-04 00:23:33,777 basehttp 56470 6205517824 "GET /dataset/ HTTP/1.1" 302 0
+ERROR 2025-08-04 00:23:33,827 log 56470 6205517824 Internal Server Error: /search/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 285, in enhanced_search
+    return render(request, "core/enhanced_search.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 157: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:23:33,831 basehttp 56470 6205517824 "GET /search/ HTTP/1.1" 500 320428
+INFO 2025-08-04 00:23:35,916 basehttp 56470 6205517824 "GET /training/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:23:35,941 basehttp 56470 6205517824 "GET /preferences/ HTTP/1.1" 200 28507
+INFO 2025-08-04 00:23:36,746 basehttp 56470 6205517824 "GET /research/ HTTP/1.1" 302 0
+ERROR 2025-08-04 00:23:36,779 log 56470 6205517824 Internal Server Error: /search/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 285, in enhanced_search
+    return render(request, "core/enhanced_search.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 157: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:23:36,782 basehttp 56470 6205517824 "GET /search/ HTTP/1.1" 500 320431
+INFO 2025-08-04 00:23:38,816 basehttp 56470 6205517824 "GET /prompt/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:23:38,826 basehttp 56470 6205517824 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:25:05,947 basehttp 56470 6205517824 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:25:06,729 basehttp 56470 6205517824 "GET /alerts/ HTTP/1.1" 200 22604
+ERROR 2025-08-04 00:25:08,926 log 56470 6205517824 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:25:08,930 basehttp 56470 6205517824 "GET /videos/ HTTP/1.1" 500 261766
+INFO 2025-08-04 00:25:11,940 basehttp 56470 6205517824 "GET /podcasts/ HTTP/1.1" 200 18125
+INFO 2025-08-04 00:25:14,125 basehttp 56470 6205517824 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:25:15,520 basehttp 56470 6205517824 "GET /collaboration/ HTTP/1.1" 200 17079
+INFO 2025-08-04 00:26:26,862 basehttp 56470 6205517824 "GET /podcasts/ HTTP/1.1" 200 18125
+ERROR 2025-08-04 00:26:27,947 log 56470 6205517824 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:26:27,950 basehttp 56470 6205517824 "GET /videos/ HTTP/1.1" 500 261768
+INFO 2025-08-04 00:26:30,017 basehttp 56470 6205517824 "GET /writing/ HTTP/1.1" 200 28378
+ERROR 2025-08-04 00:26:32,225 log 56470 6205517824 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:26:32,228 basehttp 56470 6205517824 "GET /videos/ HTTP/1.1" 500 261767
+INFO 2025-08-04 00:26:34,868 basehttp 56470 6205517824 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:26:35,547 basehttp 56470 6205517824 "GET /collaboration/ HTTP/1.1" 200 17079
+INFO 2025-08-04 00:35:22,475 autoreload 58118 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:35:23,039 embedder 58118 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:35:59,006 autoreload 58118 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/literature_search/views.py changed, reloading.
+INFO 2025-08-04 00:35:59,487 autoreload 58165 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:36:00,304 embedder 58165 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:37:05,548 embedder 58430 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:37:22,530 autoreload 58621 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:37:22,985 embedder 58621 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:37:54,339 autoreload 58818 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:37:54,819 embedder 58818 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:38:18,477 autoreload 59055 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:38:18,928 embedder 59055 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:39:44,195 autoreload 59055 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/podcast_generation/views.py changed, reloading.
+INFO 2025-08-04 00:39:44,740 autoreload 59279 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:39:45,232 embedder 59279 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:39:54,196 autoreload 59279 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/podcast_generation/urls.py changed, reloading.
+INFO 2025-08-04 00:39:54,771 autoreload 59296 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:39:55,250 embedder 59296 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:40:54,740 autoreload 59296 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/video_analysis/views.py changed, reloading.
+INFO 2025-08-04 00:40:55,409 autoreload 59404 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:40:55,954 embedder 59404 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:41:05,463 autoreload 59404 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/video_analysis/urls.py changed, reloading.
+INFO 2025-08-04 00:41:06,016 autoreload 59419 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:41:06,533 embedder 59419 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:42:56,068 autoreload 59419 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/video_analysis/urls.py changed, reloading.
+INFO 2025-08-04 00:42:56,762 autoreload 59576 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 00:42:57,252 embedder 59576 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 00:43:02,423 basehttp 59576 6192918528 "GET / HTTP/1.1" 200 15084
+INFO 2025-08-04 00:43:02,892 basehttp 59576 6192918528 "GET /static/core/style.css HTTP/1.1" 200 527
+WARNING 2025-08-04 00:43:03,283 log 59576 6192918528 Not Found: /favicon.ico
+WARNING 2025-08-04 00:43:03,283 basehttp 59576 6192918528 "GET /favicon.ico HTTP/1.1" 404 11799
+INFO 2025-08-04 00:43:05,528 basehttp 59576 6192918528 "GET /login/ HTTP/1.1" 200 12569
+INFO 2025-08-04 00:43:15,956 basehttp 59576 6192918528 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:43:15,972 basehttp 59576 6192918528 "GET / HTTP/1.1" 200 22358
+INFO 2025-08-04 00:43:19,714 basehttp 59576 6192918528 "GET /alerts/ HTTP/1.1" 200 22604
+ERROR 2025-08-04 00:43:20,346 log 59576 6192918528 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:43:20,353 basehttp 59576 6192918528 "GET /videos/ HTTP/1.1" 500 260728
+INFO 2025-08-04 00:43:45,753 basehttp 59576 6192918528 "POST /alerts/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:43:45,766 basehttp 59576 6192918528 "GET /alerts/ HTTP/1.1" 200 23396
+INFO 2025-08-04 00:43:47,942 basehttp 59576 6192918528 "POST /alerts/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:43:47,955 basehttp 59576 6192918528 "GET /alerts/ HTTP/1.1" 200 23137
+INFO 2025-08-04 00:43:57,237 basehttp 59576 6192918528 "GET /alerts/ HTTP/1.1" 200 22604
+INFO 2025-08-04 00:43:57,816 basehttp 59576 6192918528 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:44:01,018 basehttp 59576 6192918528 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:44:02,022 basehttp 59576 6192918528 "GET /collaboration/ HTTP/1.1" 200 17079
+INFO 2025-08-04 00:44:04,101 basehttp 59576 6192918528 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:44:04,836 basehttp 59576 6192918528 "GET /dataset/ HTTP/1.1" 302 0
+ERROR 2025-08-04 00:44:04,885 log 59576 6192918528 Internal Server Error: /search/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 285, in enhanced_search
+    return render(request, "core/enhanced_search.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 157: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:44:04,889 basehttp 59576 6192918528 "GET /search/ HTTP/1.1" 500 318287
+INFO 2025-08-04 00:44:07,291 basehttp 59576 6192918528 "GET /training/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:44:07,358 basehttp 59576 6192918528 "GET /preferences/ HTTP/1.1" 200 28507
+INFO 2025-08-04 00:44:19,717 basehttp 59576 6192918528 "GET /prompt/ HTTP/1.1" 302 0
+INFO 2025-08-04 00:44:19,755 basehttp 59576 6192918528 "GET /writing/ HTTP/1.1" 200 28378
+INFO 2025-08-04 00:44:29,037 basehttp 59576 6192918528 "GET / HTTP/1.1" 200 21848
+INFO 2025-08-04 00:44:30,279 basehttp 59576 6192918528 "GET / HTTP/1.1" 200 21848
+INFO 2025-08-04 00:44:35,872 basehttp 59576 6192918528 "GET / HTTP/1.1" 200 21848
+INFO 2025-08-04 00:44:37,211 basehttp 59576 6192918528 "GET /podcasts/ HTTP/1.1" 200 18125
+ERROR 2025-08-04 00:44:38,281 log 59576 6192918528 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:44:38,287 basehttp 59576 6192918528 "GET /videos/ HTTP/1.1" 500 262874
+ERROR 2025-08-04 00:44:42,836 log 59576 6192918528 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:44:42,840 basehttp 59576 6192918528 "GET /videos/ HTTP/1.1" 500 262874
+ERROR 2025-08-04 00:45:56,505 log 59576 6192918528 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 00:45:56,510 basehttp 59576 6192918528 "GET /videos/ HTTP/1.1" 500 262874
