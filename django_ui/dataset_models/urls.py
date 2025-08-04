@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/suggestions/', views.api_search_suggestions, name='api_suggestions'),
     path('api/generate-analysis/', views.api_generate_dataset_analysis, name='api_generate_analysis'),
     path('api/dataset-suggestions/', views.api_generate_dataset_suggestions, name='api_dataset_suggestions'),
+    path('api/analyze-file/', views.api_analyze_dataset_file, name='api_analyze_file'),
 ]

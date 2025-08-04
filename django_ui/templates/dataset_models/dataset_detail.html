@@ -227,17 +227,18 @@ Details{% endblock %} {% block content %}
           </h5>
         </div>
         <div class="card-body">
-          <div id="analysis-result" class="mb-3" style="display: none;">
+          <div id="analysis-result" class="mb-3" style="display: none">
             <div class="alert alert-success">
               <h6><i class="fas fa-lightbulb me-2"></i>Analysis Complete</h6>
               <div id="analysis-content"></div>
             </div>
           </div>
-          
+
           <div id="analysis-placeholder">
             <p class="text-muted">
               <i class="fas fa-info-circle me-2"></i>
-              Generate an AI-powered analysis of this dataset to get insights about:
+              Generate an AI-powered analysis of this dataset to get insights
+              about:
             </p>
             <ul class="text-muted">
               <li>Dataset characteristics and structure</li>
@@ -247,13 +248,18 @@ Details{% endblock %} {% block content %}
               <li>Best practices for usage</li>
             </ul>
           </div>
-          
-          <div id="analysis-loading" style="display: none;">
+
+          <div id="analysis-loading" style="display: none">
             <div class="d-flex align-items-center">
-              <div class="spinner-border spinner-border-sm text-warning me-3" role="status">
+              <div
+                class="spinner-border spinner-border-sm text-warning me-3"
+                role="status"
+              >
                 <span class="visually-hidden">Loading...</span>
               </div>
-              <span class="text-muted">Generating AI analysis... This may take a few moments.</span>
+              <span class="text-muted"
+                >Generating AI analysis... This may take a few moments.</span
+              >
             </div>
           </div>
         </div>
@@ -288,7 +294,7 @@ Details{% endblock %} {% block content %}
             {% endif %}
 
             <!-- AI Analysis Feature -->
-            <button 
+            <button
               id="ai-analysis-btn"
               class="btn btn-warning"
               data-dataset-id="{{ dataset.id }}"
@@ -371,29 +377,28 @@ Details{% endblock %} {% block content %}
     </div>
   </div>
 </div>
-{% endblock %} 
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const aiAnalysisBtn = document.getElementById('ai-analysis-btn');
-    const analysisResult = document.getElementById('analysis-result');
-    const analysisContent = document.getElementById('analysis-content');
-    const analysisPlaceholder = document.getElementById('analysis-placeholder');
-    const analysisLoading = document.getElementById('analysis-loading');
+  document.addEventListener("DOMContentLoaded", function () {
+    const aiAnalysisBtn = document.getElementById("ai-analysis-btn");
+    const analysisResult = document.getElementById("analysis-result");
+    const analysisContent = document.getElementById("analysis-content");
+    const analysisPlaceholder = document.getElementById("analysis-placeholder");
+    const analysisLoading = document.getElementById("analysis-loading");
 
-    aiAnalysisBtn.addEventListener('click', function() {
-        const datasetId = this.dataset.datasetId;
-        const datasetName = this.dataset.datasetName;
-        
-        // Show loading state
-        aiAnalysisBtn.disabled = true;
-        aiAnalysisBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
-        analysisPlaceholder.style.display = 'none';
-        analysisLoading.style.display = 'block';
-        
-        // Create analysis prompt based on available dataset information
-        const analysisPrompt = `Please provide a comprehensive analysis of the dataset "${datasetName}" with the following information:
+    aiAnalysisBtn.addEventListener("click", function () {
+      const datasetId = this.dataset.datasetId;
+      const datasetName = this.dataset.datasetName;
+
+      // Show loading state
+      aiAnalysisBtn.disabled = true;
+      aiAnalysisBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+      analysisPlaceholder.style.display = "none";
+      analysisLoading.style.display = "block";
+
+      // Create analysis prompt based on available dataset information
+      const analysisPrompt = `Please provide a comprehensive analysis of the dataset "${datasetName}" with the following information:
 
 Dataset Details:
 - Name: ${datasetName}
@@ -417,40 +422,41 @@ Please analyze:
 
 Provide a detailed, structured analysis that would be helpful for researchers and practitioners.`;
 
-        // Call AI analysis API
-        fetch('/datasets/api/generate-analysis/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                dataset_id: datasetId,
-                dataset_name: datasetName,
-                prompt: analysisPrompt
-            })
+      // Call AI analysis API
+      fetch("/datasets/api/generate-analysis/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({
+          dataset_id: datasetId,
+          dataset_name: datasetName,
+          prompt: analysisPrompt,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Display the analysis
+            analysisContent.innerHTML = formatAnalysisResponse(data.analysis);
+            analysisResult.style.display = "block";
+            analysisLoading.style.display = "none";
+
+            // Reset button
+            aiAnalysisBtn.disabled = false;
+            aiAnalysisBtn.innerHTML =
+              '<i class="fas fa-check me-2"></i>Analysis Complete';
+            aiAnalysisBtn.classList.remove("btn-warning");
+            aiAnalysisBtn.classList.add("btn-success");
+          } else {
+            throw new Error(data.error || "Analysis failed");
+          }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Display the analysis
-                analysisContent.innerHTML = formatAnalysisResponse(data.analysis);
-                analysisResult.style.display = 'block';
-                analysisLoading.style.display = 'none';
-                
-                // Reset button
-                aiAnalysisBtn.disabled = false;
-                aiAnalysisBtn.innerHTML = '<i class="fas fa-check me-2"></i>Analysis Complete';
-                aiAnalysisBtn.classList.remove('btn-warning');
-                aiAnalysisBtn.classList.add('btn-success');
-            } else {
-                throw new Error(data.error || 'Analysis failed');
-            }
-        })
-        .catch(error => {
-            console.error('Analysis error:', error);
-            analysisLoading.style.display = 'none';
-            analysisContent.innerHTML = `
+        .catch((error) => {
+          console.error("Analysis error:", error);
+          analysisLoading.style.display = "none";
+          analysisContent.innerHTML = `
                 <div class="alert alert-danger">
                     <h6><i class="fas fa-exclamation-triangle me-2"></i>Analysis Failed</h6>
                     <p class="mb-2">Unable to generate AI analysis at this time. This might be because:</p>
@@ -466,44 +472,43 @@ Provide a detailed, structured analysis that would be helpful for researchers an
                     </p>
                 </div>
             `;
-            analysisResult.style.display = 'block';
-            
-            // Reset button
-            aiAnalysisBtn.disabled = false;
-            aiAnalysisBtn.innerHTML = '<i class="fas fa-magic me-2"></i>AI Dataset Analysis';
+          analysisResult.style.display = "block";
+
+          // Reset button
+          aiAnalysisBtn.disabled = false;
+          aiAnalysisBtn.innerHTML =
+            '<i class="fas fa-magic me-2"></i>AI Dataset Analysis';
         });
     });
 
     function formatAnalysisResponse(analysis) {
-        // Convert markdown-like formatting to HTML
-        return analysis
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/\n/g, '<br>')
-            .replace(/^/, '<p>')
-            .replace(/$/, '</p>');
+      // Convert markdown-like formatting to HTML
+      return analysis
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/\n\n/g, "</p><p>")
+        .replace(/\n/g, "<br>")
+        .replace(/^/, "<p>")
+        .replace(/$/, "</p>");
     }
 
     function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
-        return cookieValue;
+      }
+      return cookieValue;
     }
-});
+  });
 </script>
-{% endblock %} 
-
-{% block extra_css %}
+{% endblock %} {% block extra_css %}
 <style>
   .border-left-primary {
     border-left: 3px solid #007bff !important;

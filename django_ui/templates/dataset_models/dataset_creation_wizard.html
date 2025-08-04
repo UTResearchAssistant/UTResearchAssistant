@@ -1,0 +1,995 @@
+{% extends "core/base.html" %} {% block title %}Create New Dataset - Research
+Assistant{% endblock %} {% block content %}
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="h3 mb-1">
+            <i class="fas fa-plus-circle me-2 text-success"></i>
+            Create New Dataset
+          </h2>
+          <p class="text-muted mb-0">
+            Build and publish a new dataset with AI-powered guidance and
+            analysis
+          </p>
+        </div>
+        <div>
+          <a
+            href="{% url 'dataset_models:dataset_search' %}"
+            class="btn btn-outline-secondary"
+          >
+            <i class="fas fa-arrow-left me-2"></i>Back to Search
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Main Creation Form -->
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-database me-2"></i>Dataset Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <form id="dataset-creation-form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- File Upload Section -->
+            <div class="step-section mb-4" id="file-upload-section">
+              <h6 class="text-primary mb-3">
+                <i class="fas fa-upload me-2"></i>Quick Start: Upload Dataset
+                File
+              </h6>
+
+              <div
+                class="upload-area border-2 border-dashed border-primary rounded p-4 text-center mb-3"
+                id="upload-area"
+              >
+                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                <h6 class="text-primary">Upload Your Dataset File</h6>
+                <p class="text-muted mb-3">
+                  Drop your dataset file here or click to browse<br />
+                  <small
+                    >Supported formats: CSV, JSON, TXT, ZIP, TAR.GZ (Max:
+                    100MB)</small
+                  >
+                </p>
+                <input
+                  type="file"
+                  id="dataset-file"
+                  name="dataset_file"
+                  accept=".csv,.json,.txt,.zip,.tar.gz,.xlsx,.parquet"
+                  style="display: none"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  id="browse-file-btn"
+                >
+                  <i class="fas fa-folder-open me-2"></i>Browse Files
+                </button>
+              </div>
+
+              <div
+                id="file-info"
+                style="display: none"
+                class="alert alert-info"
+              >
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <i class="fas fa-file me-2"></i>
+                    <span id="file-name"></span>
+                    <span class="badge bg-secondary ms-2" id="file-size"></span>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    id="remove-file-btn"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="mt-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success"
+                    id="analyze-file-btn"
+                  >
+                    <i class="fas fa-magic me-2"></i>Auto-Fill Form from File
+                  </button>
+                </div>
+              </div>
+
+              <div
+                id="analysis-loading"
+                style="display: none"
+                class="alert alert-warning"
+              >
+                <div class="d-flex align-items-center">
+                  <div
+                    class="spinner-border spinner-border-sm text-warning me-3"
+                    role="status"
+                  >
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Analyzing file and extracting metadata...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 1: Basic Information -->
+            <div class="step-section" id="step-1">
+              <h6 class="text-success mb-3">
+                <i class="fas fa-info-circle me-2"></i>Step 1: Basic Information
+              </h6>
+
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="name" class="form-label">Dataset Name *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    required
+                  />
+                  <div class="form-text">
+                    Choose a descriptive and unique name for your dataset
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="dataset_type" class="form-label"
+                    >Dataset Type *</label
+                  >
+                  <select
+                    class="form-select"
+                    id="dataset_type"
+                    name="dataset_type"
+                    required
+                  >
+                    <option value="">Select type...</option>
+                    {% for value, label in dataset_types %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label"
+                  >Description *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="4"
+                  required
+                ></textarea>
+                <div class="form-text">
+                  Provide a comprehensive description of your dataset
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="research_fields" class="form-label"
+                    >Research Fields</label
+                  >
+                  <select
+                    multiple
+                    class="form-select"
+                    id="research_fields"
+                    name="research_fields"
+                    size="4"
+                  >
+                    {% for field in research_fields %}
+                    <option value="{{ field.id }}">{{ field.name }}</option>
+                    {% endfor %}
+                  </select>
+                  <div class="form-text">
+                    Hold Ctrl/Cmd to select multiple fields
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="license_type" class="form-label"
+                    >License Type *</label
+                  >
+                  <select
+                    class="form-select"
+                    id="license_type"
+                    name="license_type"
+                    required
+                  >
+                    {% for value, label in license_types %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Dataset Characteristics -->
+            <div class="step-section mt-4" id="step-2">
+              <h6 class="text-success mb-3">
+                <i class="fas fa-chart-bar me-2"></i>Step 2: Dataset
+                Characteristics
+              </h6>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="num_samples" class="form-label"
+                    >Number of Samples</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="num_samples"
+                    name="num_samples"
+                    min="1"
+                  />
+                  <div class="form-text">Total number of examples/samples</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="num_classes" class="form-label"
+                    >Number of Classes</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="num_classes"
+                    name="num_classes"
+                    min="1"
+                  />
+                  <div class="form-text">For classification datasets</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="size_mb" class="form-label">Size (MB)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="size_mb"
+                    name="size_mb"
+                    min="0"
+                    step="0.1"
+                  />
+                  <div class="form-text">Dataset size on disk</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="publication_year" class="form-label"
+                    >Publication Year</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="publication_year"
+                    name="publication_year"
+                    min="1900"
+                    max="2030"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Links and Resources -->
+            <div class="step-section mt-4" id="step-3">
+              <h6 class="text-success mb-3">
+                <i class="fas fa-link me-2"></i>Step 3: Links and Resources
+              </h6>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="source_url" class="form-label">Source URL</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="source_url"
+                    name="source_url"
+                  />
+                  <div class="form-text">Original source or homepage</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="download_url" class="form-label"
+                    >Download URL</label
+                  >
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="download_url"
+                    name="download_url"
+                  />
+                  <div class="form-text">Direct download link</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="paper_url" class="form-label">Paper URL</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="paper_url"
+                    name="paper_url"
+                  />
+                  <div class="form-text">Related research paper</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="github_url" class="form-label">GitHub URL</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="github_url"
+                    name="github_url"
+                  />
+                  <div class="form-text">Code repository</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Metadata -->
+            <div class="step-section mt-4" id="step-4">
+              <h6 class="text-success mb-3">
+                <i class="fas fa-tags me-2"></i>Step 4: Metadata and
+                Classification
+              </h6>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="tags" class="form-label">Tags</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tags"
+                    name="tags"
+                  />
+                  <div class="form-text">
+                    Comma-separated tags (e.g., nlp, computer-vision, benchmark)
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="keywords" class="form-label">Keywords</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="keywords"
+                    name="keywords"
+                  />
+                  <div class="form-text">Comma-separated keywords</div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="authors" class="form-label">Authors</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="authors"
+                  name="authors"
+                />
+                <div class="form-text">Comma-separated author names</div>
+              </div>
+            </div>
+
+            <!-- AI Analysis Option -->
+            <div class="step-section mt-4" id="step-5">
+              <h6 class="text-warning mb-3">
+                <i class="fas fa-magic me-2"></i>AI-Powered Analysis
+              </h6>
+
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="generate_analysis"
+                  name="generate_analysis"
+                  value="true"
+                  checked
+                />
+                <label class="form-check-label" for="generate_analysis">
+                  <strong>Generate AI analysis after creation</strong>
+                </label>
+                <div class="form-text">
+                  Automatically generate insights, quality assessment, and
+                  recommendations for your dataset
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                id="get-ai-suggestions"
+              >
+                <i class="fas fa-lightbulb me-2"></i>Get AI Suggestions
+              </button>
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary me-2"
+                  id="preview-dataset"
+                >
+                  <i class="fas fa-eye me-2"></i>Preview
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  id="create-dataset-btn"
+                >
+                  <i class="fas fa-plus me-2"></i>Create Dataset
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Assistant Sidebar -->
+    <div class="col-lg-4">
+      <!-- AI Suggestions -->
+      <div class="card">
+        <div class="card-header bg-warning text-dark">
+          <h6 class="mb-0"><i class="fas fa-robot me-2"></i>AI Assistant</h6>
+        </div>
+        <div class="card-body">
+          <div id="ai-suggestions-content">
+            <p class="text-muted">
+              <i class="fas fa-info-circle me-2"></i>
+              Fill in the dataset concept and type, then click "Get AI
+              Suggestions" for intelligent recommendations.
+            </p>
+          </div>
+
+          <div id="ai-loading" style="display: none">
+            <div class="d-flex align-items-center">
+              <div
+                class="spinner-border spinner-border-sm text-warning me-3"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="text-muted">Generating suggestions...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creation Tips -->
+      <div class="card mt-3">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0"><i class="fas fa-tips me-2"></i>Creation Tips</h6>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Use descriptive, unique names
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Include comprehensive descriptions
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Select appropriate license
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Add relevant tags and keywords
+            </li>
+            <li class="mb-0">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Consider ethical implications
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="card mt-3" id="preview-panel" style="display: none">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><i class="fas fa-eye me-2"></i>Dataset Preview</h6>
+        </div>
+        <div class="card-body" id="preview-content">
+          <!-- Preview content will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  // Django URLs for JavaScript
+  const DATASET_CREATION_URL =
+    "{% url 'dataset_models:dataset_creation_wizard' %}";
+  const DATASET_SUGGESTIONS_URL =
+    "{% url 'dataset_models:api_dataset_suggestions' %}";
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("dataset-creation-form");
+    const aiSuggestionsBtn = document.getElementById("get-ai-suggestions");
+    const previewBtn = document.getElementById("preview-dataset");
+    const createBtn = document.getElementById("create-dataset-btn");
+    const aiSuggestionsContent = document.getElementById(
+      "ai-suggestions-content"
+    );
+    const aiLoading = document.getElementById("ai-loading");
+    const previewPanel = document.getElementById("preview-panel");
+    const previewContent = document.getElementById("preview-content");
+
+    // File upload elements
+    const fileInput = document.getElementById("dataset-file");
+    const uploadArea = document.getElementById("upload-area");
+    const browseBtn = document.getElementById("browse-file-btn");
+    const fileInfo = document.getElementById("file-info");
+    const fileName = document.getElementById("file-name");
+    const fileSize = document.getElementById("file-size");
+    const removeFileBtn = document.getElementById("remove-file-btn");
+    const analyzeFileBtn = document.getElementById("analyze-file-btn");
+    const analysisLoading = document.getElementById("analysis-loading");
+
+    // File upload functionality
+    browseBtn.addEventListener("click", () => fileInput.click());
+
+    uploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadArea.classList.add("border-success", "bg-light");
+    });
+
+    uploadArea.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove("border-success", "bg-light");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove("border-success", "bg-light");
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFileSelect(files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    removeFileBtn.addEventListener("click", () => {
+      fileInput.value = "";
+      fileInfo.style.display = "none";
+      uploadArea.style.display = "block";
+    });
+
+    analyzeFileBtn.addEventListener("click", () => {
+      analyzeUploadedFile();
+    });
+
+    function handleFileSelect(file) {
+      // Validate file size (100MB limit)
+      if (file.size > 100 * 1024 * 1024) {
+        alert("File size must be less than 100MB");
+        return;
+      }
+
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      uploadArea.style.display = "none";
+      fileInfo.style.display = "block";
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const sizes = ["Bytes", "KB", "MB", "GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    function analyzeUploadedFile() {
+      if (!fileInput.files[0]) {
+        alert("Please select a file first");
+        return;
+      }
+
+      analysisLoading.style.display = "block";
+      fileInfo.style.display = "none";
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      fetch("/datasets/api/analyze-file/", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            populateFormFromAnalysis(data.analysis);
+            showAnalysisSuccess();
+          } else {
+            throw new Error(data.error || "Failed to analyze file");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error analyzing file: " + error.message);
+        })
+        .finally(() => {
+          analysisLoading.style.display = "none";
+          fileInfo.style.display = "block";
+        });
+    }
+
+    function populateFormFromAnalysis(analysis) {
+      // Populate form fields with extracted metadata
+      if (analysis.name) document.getElementById("name").value = analysis.name;
+      if (analysis.description)
+        document.getElementById("description").value = analysis.description;
+      if (analysis.dataset_type)
+        document.getElementById("dataset_type").value = analysis.dataset_type;
+      if (analysis.num_samples)
+        document.getElementById("num_samples").value = analysis.num_samples;
+      if (analysis.num_classes)
+        document.getElementById("num_classes").value = analysis.num_classes;
+      if (analysis.size_mb)
+        document.getElementById("size_mb").value = analysis.size_mb;
+      if (analysis.tags)
+        document.getElementById("tags").value = analysis.tags.join(", ");
+      if (analysis.keywords)
+        document.getElementById("keywords").value =
+          analysis.keywords.join(", ");
+    }
+
+    function showAnalysisSuccess() {
+      const successAlert = `
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          <i class="fas fa-check-circle me-2"></i>
+          <strong>Success!</strong> Form has been automatically filled with extracted metadata.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+
+      const uploadSection = document.getElementById("file-upload-section");
+      uploadSection.insertAdjacentHTML("afterend", successAlert);
+
+      // Remove alert after 5 seconds
+      setTimeout(() => {
+        const alert = uploadSection.nextElementSibling;
+        if (alert && alert.classList.contains("alert")) {
+          alert.remove();
+        }
+      }, 5000);
+    }
+
+    // Get AI suggestions
+    aiSuggestionsBtn.addEventListener("click", function () {
+      const formData = new FormData(form);
+      const concept = formData.get("name") || "dataset";
+      const researchField = getSelectedText("research_fields") || "general";
+      const datasetType = getSelectedText("dataset_type") || "general";
+
+      if (!concept.trim()) {
+        alert("Please enter a dataset name or concept first.");
+        return;
+      }
+
+      aiLoading.style.display = "block";
+      aiSuggestionsContent.style.display = "none";
+
+      fetch(DATASET_SUGGESTIONS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({
+          concept: concept,
+          research_field: researchField,
+          dataset_type: datasetType,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            displayAISuggestions(data.suggestions);
+          } else {
+            throw new Error(data.error || "Failed to get suggestions");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          aiSuggestionsContent.innerHTML = `
+                <div class="alert alert-danger small">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Failed to get AI suggestions. Please try again.
+                </div>
+            `;
+        })
+        .finally(() => {
+          aiLoading.style.display = "none";
+          aiSuggestionsContent.style.display = "block";
+        });
+    });
+
+    // Preview dataset
+    previewBtn.addEventListener("click", function () {
+      const formData = new FormData(form);
+      const preview = generatePreview(formData);
+      previewContent.innerHTML = preview;
+      previewPanel.style.display = "block";
+      previewPanel.scrollIntoView({ behavior: "smooth" });
+    });
+
+    // Submit form
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      createBtn.disabled = true;
+      createBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+
+      const formData = new FormData(form);
+
+      fetch(DATASET_CREATION_URL, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Show success message
+            const successAlert = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Success!</strong> ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+
+            // Insert success message at the top
+            const container = document.querySelector(".container");
+            container.insertAdjacentHTML("afterbegin", successAlert);
+
+            // Redirect after a short delay
+            setTimeout(() => {
+              window.location.href = data.redirect_url;
+            }, 2000);
+          } else {
+            throw new Error(data.error || "Failed to create dataset");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error creating dataset: " + error.message);
+        })
+        .finally(() => {
+          createBtn.disabled = false;
+          createBtn.innerHTML =
+            '<i class="fas fa-plus me-2"></i>Create Dataset';
+        });
+    });
+
+    function displayAISuggestions(suggestions) {
+      aiSuggestionsContent.innerHTML = `
+            <div class="ai-suggestions">
+                <h6 class="text-warning mb-3">
+                    <i class="fas fa-lightbulb me-2"></i>AI Suggestions
+                </h6>
+                
+                <div class="mb-3">
+                    <strong>Name Ideas:</strong>
+                    <div class="mt-1">
+                        ${suggestions.name_suggestions
+                          .map(
+                            (name) =>
+                              `<span class="badge bg-light text-dark me-1 mb-1 suggestion-badge" data-target="name">${name}</span>`
+                          )
+                          .join("")}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Description Template:</strong>
+                    <div class="bg-light p-2 rounded small">
+                        <pre class="mb-0 suggestion-text" data-target="description">${
+                          suggestions.description_template
+                        }</pre>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary mt-1" onclick="useDescription()">
+                        <i class="fas fa-copy me-1"></i>Use This
+                    </button>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Suggested Tags:</strong>
+                    <div class="mt-1">
+                        ${suggestions.suggested_tags
+                          .map(
+                            (tag) =>
+                              `<span class="badge bg-secondary me-1 mb-1">${tag}</span>`
+                          )
+                          .join("")}
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary mt-1" onclick="useTags('${suggestions.suggested_tags.join(
+                      ", "
+                    )}')">
+                        <i class="fas fa-copy me-1"></i>Use These
+                    </button>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Quality Checklist:</strong>
+                    <ul class="small mb-0">
+                        ${suggestions.quality_checklist
+                          .map((item) => `<li>${item}</li>`)
+                          .join("")}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+      // Add click handlers for suggestion badges
+      document.querySelectorAll(".suggestion-badge").forEach((badge) => {
+        badge.addEventListener("click", function () {
+          const target = this.dataset.target;
+          const value = this.textContent;
+          document.getElementById(target).value = value;
+          this.classList.add("bg-success", "text-white");
+          this.classList.remove("bg-light", "text-dark");
+        });
+      });
+    }
+
+    function generatePreview(formData) {
+      return `
+            <h6 class="text-primary">${
+              formData.get("name") || "Untitled Dataset"
+            }</h6>
+            <p class="small text-muted">${
+              formData.get("description") || "No description provided"
+            }</p>
+            
+            <div class="row text-center">
+                <div class="col-6">
+                    <small class="text-muted">Type</small>
+                    <div class="fw-bold">${
+                      getSelectedText("dataset_type") || "Not specified"
+                    }</div>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted">License</small>
+                    <div class="fw-bold">${
+                      getSelectedText("license_type") || "Public"
+                    }</div>
+                </div>
+            </div>
+            
+            <div class="mt-2">
+                <small class="text-muted">Research Fields</small>
+                <div>${
+                  getSelectedText("research_fields") || "None selected"
+                }</div>
+            </div>
+        `;
+    }
+
+    function getSelectedText(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return "";
+
+      if (select.multiple) {
+        const selected = Array.from(select.selectedOptions).map(
+          (option) => option.text
+        );
+        return selected.join(", ");
+      } else {
+        return select.selectedOptions[0]?.text || "";
+      }
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    // Global functions for AI suggestions
+    window.useDescription = function () {
+      const template = document.querySelector(
+        '.suggestion-text[data-target="description"]'
+      ).textContent;
+      document.getElementById("description").value = template.trim();
+    };
+
+    window.useTags = function (tags) {
+      document.getElementById("tags").value = tags;
+    };
+  });
+</script>
+{% endblock %} {% block extra_css %}
+<style>
+  .upload-area {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .upload-area:hover {
+    background-color: #f8f9fa !important;
+    border-color: #007bff !important;
+  }
+
+  .upload-area.drag-over {
+    border-color: #28a745 !important;
+    background-color: #d4edda !important;
+  }
+
+  .step-section {
+    border-left: 3px solid #28a745;
+    padding-left: 1rem;
+  }
+
+  .suggestion-badge {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .suggestion-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-text {
+    font-size: 0.875em;
+  }
+
+  .ai-suggestions {
+    font-size: 0.9em;
+  }
+
+  .ai-suggestions pre {
+    white-space: pre-wrap;
+    font-size: 0.8em;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 15px;
+    }
+
+    .step-section {
+      border-left: none;
+      border-top: 3px solid #28a745;
+      padding-left: 0;
+      padding-top: 1rem;
+    }
+  }
+</style>
+{% endblock %}

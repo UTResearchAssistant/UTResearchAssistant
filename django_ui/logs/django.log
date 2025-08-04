@@ -6717,3 +6717,464 @@ INFO 2025-08-04 10:01:06,532 autoreload 87091 8205560128 /Users/tahamajs/Documen
 INFO 2025-08-04 10:01:09,215 autoreload 87215 8205560128 Watching for file changes with StatReloader
 INFO 2025-08-04 10:01:10,338 embedder 87215 8205560128 Using OpenAI for embeddings
 INFO 2025-08-04 10:01:20,350 autoreload 87215 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py changed, reloading.
+INFO 2025-08-04 10:05:15,261 autoreload 88541 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 10:05:16,067 embedder 88541 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 10:05:26,021 basehttp 88541 6128922624 "GET / HTTP/1.1" 200 18389
+INFO 2025-08-04 10:05:26,483 basehttp 88541 6128922624 "GET /static/core/style.css HTTP/1.1" 200 527
+WARNING 2025-08-04 10:05:27,329 log 88541 6128922624 Not Found: /favicon.ico
+WARNING 2025-08-04 10:05:27,331 basehttp 88541 6128922624 "GET /favicon.ico HTTP/1.1" 404 12264
+INFO 2025-08-04 10:05:37,251 basehttp 88541 6128922624 "GET /training/ HTTP/1.1" 302 0
+INFO 2025-08-04 10:05:37,258 basehttp 88541 6128922624 "GET /preferences/ HTTP/1.1" 302 0
+INFO 2025-08-04 10:05:37,283 basehttp 88541 6128922624 "GET /login/?next=/preferences/ HTTP/1.1" 200 14855
+INFO 2025-08-04 10:05:41,315 basehttp 88541 6128922624 "GET /podcasts/ HTTP/1.1" 302 0
+INFO 2025-08-04 10:05:41,319 basehttp 88541 6128922624 "GET /login/?next=/podcasts/ HTTP/1.1" 200 14855
+INFO 2025-08-04 10:06:13,013 basehttp 88541 6128922624 "POST /login/?next=/podcasts/ HTTP/1.1" 200 15709
+INFO 2025-08-04 10:06:18,899 basehttp 88541 6128922624 "POST /login/?next=/podcasts/ HTTP/1.1" 200 15710
+INFO 2025-08-04 10:06:22,839 basehttp 88541 6128922624 "POST /login/?next=/podcasts/ HTTP/1.1" 302 0
+INFO 2025-08-04 10:06:22,862 basehttp 88541 6128922624 "GET /podcasts/ HTTP/1.1" 200 20921
+ERROR 2025-08-04 10:06:30,027 log 88541 6128922624 Internal Server Error: /datasets/datasets/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py", line 99, in dataset_search
+    return render(request, 'dataset_models/dataset_search.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'create_dataset' not found. 'create_dataset' is not a valid view function or pattern name.
+ERROR 2025-08-04 10:06:30,030 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 500 192485
+ERROR 2025-08-04 10:07:22,124 log 88541 6128922624 Internal Server Error: /datasets/datasets/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py", line 99, in dataset_search
+    return render(request, 'dataset_models/dataset_search.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'create_dataset' not found. 'create_dataset' is not a valid view function or pattern name.
+ERROR 2025-08-04 10:07:22,130 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 500 193125
+ERROR 2025-08-04 10:07:23,400 log 88541 6128922624 Internal Server Error: /datasets/datasets/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py", line 99, in dataset_search
+    return render(request, 'dataset_models/dataset_search.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'create_dataset' not found. 'create_dataset' is not a valid view function or pattern name.
+ERROR 2025-08-04 10:07:23,407 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 500 193125
+ERROR 2025-08-04 10:07:24,245 log 88541 6128922624 Internal Server Error: /datasets/datasets/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py", line 99, in dataset_search
+    return render(request, 'dataset_models/dataset_search.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'create_dataset' not found. 'create_dataset' is not a valid view function or pattern name.
+ERROR 2025-08-04 10:07:24,248 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 500 193125
+ERROR 2025-08-04 10:07:25,022 log 88541 6128922624 Internal Server Error: /datasets/datasets/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py", line 99, in dataset_search
+    return render(request, 'dataset_models/dataset_search.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'create_dataset' not found. 'create_dataset' is not a valid view function or pattern name.
+ERROR 2025-08-04 10:07:25,024 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 500 193125
+INFO 2025-08-04 10:07:53,712 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 200 37742
+INFO 2025-08-04 10:08:23,616 basehttp 88541 6128922624 "GET /datasets/datasets/d19062c9-d369-4044-b704-2a2ca3b13efb/ HTTP/1.1" 200 29039
+INFO 2025-08-04 10:08:26,176 basehttp 88541 6128922624 "POST /datasets/api/generate-analysis/ HTTP/1.1" 200 1612
+INFO 2025-08-04 10:08:29,228 basehttp 88541 6128922624 "GET /datasets/models/ HTTP/1.1" 200 37672
+INFO 2025-08-04 10:09:29,900 basehttp 88541 6128922624 "GET /podcasts/ HTTP/1.1" 200 20411
+ERROR 2025-08-04 10:09:31,130 log 88541 6128922624 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 10:09:31,133 basehttp 88541 6128922624 "GET /videos/ HTTP/1.1" 500 262020
+INFO 2025-08-04 10:09:36,802 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 200 37742
+INFO 2025-08-04 10:09:39,706 basehttp 88541 6128922624 "GET /datasets/datasets/d19062c9-d369-4044-b704-2a2ca3b13efb/ HTTP/1.1" 200 29039
+INFO 2025-08-04 10:09:52,268 basehttp 88541 6128922624 "POST /datasets/api/generate-analysis/ HTTP/1.1" 200 1612
+INFO 2025-08-04 10:09:58,872 basehttp 88541 6128922624 "GET /datasets/datasets/ HTTP/1.1" 200 37742
+ERROR 2025-08-04 10:10:03,669 log 88541 6128922624 Internal Server Error: /training/configurations/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/training_config/views.py", line 122, in configuration_list
+    return render(request, 'training_config/configuration_list.html', context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 523, in parse
+    self.unclosed_block_tag(parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 590, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 1: 'block'. Looking for one of: endblock.
+ERROR 2025-08-04 10:10:03,672 basehttp 88541 6128922624 "GET /training/configurations/ HTTP/1.1" 500 182139
+INFO 2025-08-04 10:24:33,060 autoreload 88541 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/urls.py changed, reloading.
+INFO 2025-08-04 10:24:35,944 autoreload 89053 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 10:24:36,592 embedder 89053 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 11:39:42,881 basehttp 89053 6198046720 "GET /datasets/datasets/ HTTP/1.1" 200 37742
+INFO 2025-08-04 11:39:47,226 basehttp 89053 6198046720 "GET /datasets/create-dataset/ HTTP/1.1" 200 41217
+INFO 2025-08-04 11:40:05,895 basehttp 89053 6198046720 "GET /datasets/datasets/ HTTP/1.1" 200 37742
+INFO 2025-08-04 11:40:11,472 basehttp 89053 6198046720 "GET /datasets/create-dataset/ HTTP/1.1" 200 41217
+INFO 2025-08-04 11:47:00,385 autoreload 89053 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/views.py changed, reloading.
+INFO 2025-08-04 11:47:03,739 autoreload 91828 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 11:47:04,600 embedder 91828 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 11:47:11,505 autoreload 91828 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/urls.py changed, reloading.
+INFO 2025-08-04 11:47:12,342 autoreload 91832 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 11:47:13,081 embedder 91832 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 11:48:27,750 basehttp 91832 6136197120 "GET /datasets/create-dataset/ HTTP/1.1" 200 49210
+INFO 2025-08-04 12:26:04,548 autoreload 91832 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/urls.py changed, reloading.
+INFO 2025-08-04 12:26:07,056 autoreload 93105 8205560128 Watching for file changes with StatReloader
+INFO 2025-08-04 12:26:08,770 embedder 93105 8205560128 Using OpenAI for embeddings

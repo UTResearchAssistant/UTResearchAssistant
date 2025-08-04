@@ -556,3 +556,242 @@ def _get_recommended_size(dataset_type, concept):
         'medium': '10K-100K samples', 
         'large': '100K+ samples'
     })
+
+
+@require_http_methods(["POST"])
+def api_analyze_dataset_file(request):
+    """
+    Analyze uploaded dataset file and extract metadata for auto-filling form
+    """
+    try:
+        if 'file' not in request.FILES:
+            return JsonResponse({
+                'success': False,
+                'error': 'No file uploaded'
+            }, status=400)
+        
+        uploaded_file = request.FILES['file']
+        file_name = uploaded_file.name
+        file_size_mb = uploaded_file.size / (1024 * 1024)
+        
+        # Initialize analysis results
+        analysis = {
+            'name': '',
+            'description': '',
+            'dataset_type': '',
+            'num_samples': 0,
+            'num_classes': 0,
+            'size_mb': round(file_size_mb, 2),
+            'tags': [],
+            'keywords': []
+        }
+        
+        # Extract basic info from filename
+        base_name = file_name.split('.')[0]
+        analysis['name'] = _clean_filename_for_title(base_name)
+        
+        # Determine file type and analyze accordingly
+        file_extension = file_name.lower().split('.')[-1]
+        
+        if file_extension == 'csv':
+            analysis.update(_analyze_csv_file(uploaded_file))
+        elif file_extension == 'json':
+            analysis.update(_analyze_json_file(uploaded_file))
+        elif file_extension in ['txt']:
+            analysis.update(_analyze_text_file(uploaded_file))
+        elif file_extension in ['zip', 'tar', 'gz']:
+            analysis.update(_analyze_archive_file(uploaded_file, file_extension))
+        elif file_extension in ['xlsx', 'xls']:
+            analysis.update(_analyze_excel_file(uploaded_file))
+        else:
+            # Generic analysis for unknown file types
+            analysis.update(_analyze_generic_file(uploaded_file, file_extension))
+        
+        return JsonResponse({
+            'success': True,
+            'analysis': analysis
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error analyzing file: {str(e)}'
+        }, status=400)
+
+
+def _clean_filename_for_title(filename):
+    """Convert filename to a clean dataset title"""
+    import re
+    # Remove common prefixes/suffixes
+    cleaned = re.sub(r'(dataset|data|train|test|val|validation)[-_]?', '', filename, flags=re.IGNORECASE)
+    # Replace underscores and hyphens with spaces
+    cleaned = re.sub(r'[-_]+', ' ', cleaned)
+    # Capitalize words
+    return ' '.join(word.capitalize() for word in cleaned.split())
+
+
+def _analyze_csv_file(uploaded_file):
+    """Analyze CSV file structure and content"""
+    import pandas as pd
+    import io
+    
+    try:
+        # Read first few rows to analyze structure
+        file_content = uploaded_file.read(10000)  # Read first 10KB
+        uploaded_file.seek(0)  # Reset file pointer
+        
+        df = pd.read_csv(io.StringIO(file_content.decode('utf-8')), nrows=100)
+        
+        analysis = {
+            'dataset_type': 'tabular',
+            'num_samples': len(df),
+            'description': f'Tabular dataset with {len(df.columns)} columns: {", ".join(df.columns[:5].tolist())}{"..." if len(df.columns) > 5 else ""}',
+            'tags': ['tabular', 'csv'],
+            'keywords': df.columns.tolist()[:10]  # First 10 column names as keywords
+        }
+        
+        # Try to detect if it's a classification dataset
+        categorical_columns = df.select_dtypes(include=['object']).columns
+        if len(categorical_columns) > 0:
+            last_col = df.columns[-1]
+            if last_col in categorical_columns:
+                unique_values = df[last_col].nunique()
+                if unique_values < 20:  # Likely classification labels
+                    analysis['num_classes'] = unique_values
+                    analysis['tags'].append('classification')
+        
+        return analysis
+        
+    except Exception as e:
+        return {
+            'dataset_type': 'tabular',
+            'description': f'CSV dataset (analysis limited: {str(e)})',
+            'tags': ['tabular', 'csv']
+        }
+
+
+def _analyze_json_file(uploaded_file):
+    """Analyze JSON file structure"""
+    import json
+    
+    try:
+        content = uploaded_file.read().decode('utf-8')
+        data = json.loads(content)
+        
+        analysis = {
+            'dataset_type': 'structured',
+            'tags': ['json', 'structured'],
+        }
+        
+        if isinstance(data, list):
+            analysis['num_samples'] = len(data)
+            analysis['description'] = f'JSON dataset with {len(data)} records'
+            
+            # Analyze first record to understand structure
+            if data and isinstance(data[0], dict):
+                keys = list(data[0].keys())
+                analysis['keywords'] = keys[:10]
+                analysis['description'] += f'. Fields: {", ".join(keys[:5])}{"..." if len(keys) > 5 else ""}'
+        
+        elif isinstance(data, dict):
+            analysis['description'] = f'JSON dataset with {len(data)} top-level keys'
+            analysis['keywords'] = list(data.keys())[:10]
+        
+        return analysis
+        
+    except Exception as e:
+        return {
+            'dataset_type': 'structured',
+            'description': f'JSON dataset (analysis limited: {str(e)})',
+            'tags': ['json', 'structured']
+        }
+
+
+def _analyze_text_file(uploaded_file):
+    """Analyze text file content"""
+    try:
+        content = uploaded_file.read().decode('utf-8')
+        lines = content.split('\n')
+        word_count = len(content.split())
+        
+        analysis = {
+            'dataset_type': 'text',
+            'num_samples': len([line for line in lines if line.strip()]),
+            'description': f'Text dataset with {len(lines)} lines and approximately {word_count} words',
+            'tags': ['text', 'nlp'],
+            'keywords': ['text', 'nlp', 'natural language']
+        }
+        
+        return analysis
+        
+    except Exception as e:
+        return {
+            'dataset_type': 'text',
+            'description': f'Text dataset (analysis limited: {str(e)})',
+            'tags': ['text', 'nlp']
+        }
+
+
+def _analyze_archive_file(uploaded_file, extension):
+    """Analyze archive files (zip, tar, etc.)"""
+    analysis = {
+        'dataset_type': 'mixed',
+        'description': f'Archive dataset ({extension} format) - may contain multiple file types',
+        'tags': ['archive', extension],
+        'keywords': ['archive', 'compressed', 'multi-file']
+    }
+    
+    # Could add more sophisticated archive analysis here
+    # For now, provide generic info
+    
+    return analysis
+
+
+def _analyze_excel_file(uploaded_file):
+    """Analyze Excel file structure"""
+    try:
+        import pandas as pd
+        
+        # Read first sheet
+        df = pd.read_excel(uploaded_file, nrows=100)
+        
+        analysis = {
+            'dataset_type': 'tabular',
+            'num_samples': len(df),
+            'description': f'Excel dataset with {len(df.columns)} columns: {", ".join(df.columns[:5].tolist())}{"..." if len(df.columns) > 5 else ""}',
+            'tags': ['tabular', 'excel', 'spreadsheet'],
+            'keywords': df.columns.tolist()[:10]
+        }
+        
+        return analysis
+        
+    except Exception as e:
+        return {
+            'dataset_type': 'tabular',
+            'description': f'Excel dataset (analysis limited: {str(e)})',
+            'tags': ['tabular', 'excel']
+        }
+
+
+def _analyze_generic_file(uploaded_file, extension):
+    """Generic analysis for unknown file types"""
+    analysis = {
+        'description': f'Dataset file ({extension} format)',
+        'tags': [extension],
+        'keywords': ['data', extension]
+    }
+    
+    # Try to guess dataset type based on extension
+    if extension in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']:
+        analysis['dataset_type'] = 'image'
+        analysis['tags'].extend(['image', 'computer-vision'])
+    elif extension in ['mp3', 'wav', 'flac', 'ogg']:
+        analysis['dataset_type'] = 'audio'
+        analysis['tags'].extend(['audio', 'signal-processing'])
+    elif extension in ['mp4', 'avi', 'mov', 'mkv']:
+        analysis['dataset_type'] = 'video'
+        analysis['tags'].extend(['video', 'computer-vision'])
+    else:
+        analysis['dataset_type'] = 'other'
+    
+    return analysis
