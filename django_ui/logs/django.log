@@ -7178,3 +7178,115 @@ INFO 2025-08-04 11:48:27,750 basehttp 91832 6136197120 "GET /datasets/create-dat
 INFO 2025-08-04 12:26:04,548 autoreload 91832 8205560128 /Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/dataset_models/urls.py changed, reloading.
 INFO 2025-08-04 12:26:07,056 autoreload 93105 8205560128 Watching for file changes with StatReloader
 INFO 2025-08-04 12:26:08,770 embedder 93105 8205560128 Using OpenAI for embeddings
+INFO 2025-08-04 15:41:01,873 autoreload 13846 8505715008 Watching for file changes with StatReloader
+INFO 2025-08-04 15:41:02,652 embedder 13846 8505715008 Using OpenAI for embeddings
+INFO 2025-08-04 15:41:05,406 basehttp 13846 6124122112 "GET / HTTP/1.1" 200 25472
+INFO 2025-08-04 15:41:05,504 basehttp 13846 6124122112 "GET /static/core/style.css HTTP/1.1" 304 0
+WARNING 2025-08-04 15:41:05,611 log 13846 6124122112 Not Found: /favicon.ico
+WARNING 2025-08-04 15:41:05,613 basehttp 13846 6124122112 "GET /favicon.ico HTTP/1.1" 404 12264
+INFO 2025-08-04 15:41:12,692 basehttp 13846 6124122112 "GET /search/ HTTP/1.1" 200 19361
+INFO 2025-08-04 15:41:15,816 basehttp 13846 6124122112 "GET /training/ HTTP/1.1" 302 0
+INFO 2025-08-04 15:41:15,836 basehttp 13846 6124122112 "GET /preferences/ HTTP/1.1" 200 30793
+INFO 2025-08-04 15:41:21,930 basehttp 13846 6124122112 "GET /collaboration/ HTTP/1.1" 200 19365
+INFO 2025-08-04 15:47:41,480 basehttp 13846 6124122112 "GET /search/ HTTP/1.1" 200 19361
+INFO 2025-08-04 15:48:29,203 basehttp 13846 6124122112 "GET /podcasts/ HTTP/1.1" 200 20411
+ERROR 2025-08-04 15:50:07,716 log 13846 6124122112 Internal Server Error: /videos/
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/tahamajs/Documents/uni/Research/ResearchAgent/V2/research-assistant/django_ui/core/views.py", line 477, in video_analyzer
+    return render(request, "core/video_analyzer.html", context)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tahamajs/Documents/uni/ITV/.venv/lib/python3.13/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 264: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-04 15:50:07,725 basehttp 13846 6124122112 "GET /videos/ HTTP/1.1" 500 261991
+INFO 2025-08-04 15:50:10,787 basehttp 13846 6124122112 "GET /writing/ HTTP/1.1" 200 30664
+INFO 2025-08-04 15:53:14,891 basehttp 13846 6124122112 "GET /alerts/ HTTP/1.1" 200 24890
+INFO 2025-08-04 15:54:27,604 basehttp 13846 6124122112 "GET /collaboration/ HTTP/1.1" 200 19365
+INFO 2025-08-04 15:54:35,861 basehttp 13846 6124122112 "GET /collaboration/ HTTP/1.1" 200 19365
+INFO 2025-08-13 05:10:25,289 autoreload 31718 8451402048 Watching for file changes with StatReloader
+INFO 2025-08-13 05:10:26,080 embedder 31718 8451402048 Using OpenAI for embeddings
+INFO 2025-08-13 05:10:28,591 basehttp 31718 6136606720 "GET / HTTP/1.1" 200 18389
+INFO 2025-08-13 05:10:29,025 basehttp 31718 6136606720 "GET /static/core/style.css HTTP/1.1" 304 0
+INFO 2025-08-13 05:10:32,340 basehttp 31718 6136606720 "GET /login/ HTTP/1.1" 200 14855
+INFO 2025-08-13 05:10:35,419 basehttp 31718 6136606720 "POST /login/ HTTP/1.1" 200 15709
+INFO 2025-08-13 05:10:39,726 basehttp 31718 6136606720 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-08-13 05:10:39,750 basehttp 31718 6136606720 "GET / HTTP/1.1" 200 25982
+INFO 2025-08-13 05:10:42,746 basehttp 31718 6136606720 "GET /dataset/ HTTP/1.1" 302 0
+INFO 2025-08-13 05:10:42,778 basehttp 31718 6136606720 "GET /search/ HTTP/1.1" 200 19361
+INFO 2025-08-13 05:10:44,907 basehttp 31718 6136606720 "GET /training/ HTTP/1.1" 302 0
+INFO 2025-08-13 05:10:44,933 basehttp 31718 6136606720 "GET /preferences/ HTTP/1.1" 200 30793
+INFO 2025-08-13 05:10:46,620 basehttp 31718 6136606720 "GET /datasets/search/ HTTP/1.1" 200 19985
